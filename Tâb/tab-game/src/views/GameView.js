@@ -7,8 +7,8 @@ import {
   showVictoryModal, 
   saveGameResult, 
   showRulesModal, 
-  showModal,  // <-- ADICIONA ESTE
-  closeModal  // <-- ADICIONA ESTE
+  showModal,
+  closeModal
 } from '../ui/Modal.js';
 import { 
   playSound, 
@@ -120,6 +120,13 @@ export function renderGameView(container) {
 
   let diceBtn; // Referência para o botão do dado (para desativar)
 
+  // <-- ADICIONADO: Contadores de estatísticas -->
+  let humanMoves = 0;
+  let humanCaptures = 0;
+  let aiMoves = 0;
+  let aiCaptures = 0;
+  // <-- FIM DA ADIÇÃO -->
+
   // 1. Cria o Popover de Áudio (mas mantém-no escondido)
   const audioPopover = document.createElement('div');
   audioPopover.id = 'game-audio-popover';
@@ -207,12 +214,14 @@ export function renderGameView(container) {
     onMove: (r, c) => {
       try {
         const res = engine.moveSelectedTo(r, c);
+        humanMoves++; // <-- ADICIONADO: Contabiliza jogada humana
         board.clearHighlights();
         board.render();
         
         if (res?.captured) {
           toast('Captura!', 'success');
           playSound('goodcapture'); // <-- TOCA O SOM DE CAPTURA BOA
+          humanCaptures++; // <-- ADICIONADO: Contabiliza captura humana
         }
         
         // Verificar vitória
@@ -500,11 +509,13 @@ export function renderGameView(container) {
       // (Re)seleciona a peça no motor (importante!)
       engine.getValidMoves(chosenMove.piece.row, chosenMove.piece.col); 
       const res = engine.moveSelectedTo(chosenMove.target.row, chosenMove.target.col);
+      aiMoves++; // <-- ADICIONADO: Contabiliza jogada da IA
 
       board.render();
       if (res?.captured) {
         toast('Computador capturou!', 'success');
         playSound('badcapture'); // <-- TOCA O SOM DE CAPTURA MÁ
+        aiCaptures++; // <-- ADICIONADO: Contabiliza captura da IA
       }
       
       // 6. Verificar Fim ou Próximo Turno
@@ -539,11 +550,11 @@ export function renderGameView(container) {
     
     playSound('victory'); // <-- TOCA O SOM DE VITÓRIA
     
-    // Salva estatísticas
+    // Salva estatísticas (DO PONTO DE VISTA DO JOGADOR HUMANO)
     const stats = {
       won: winner === 1,
-      captures: 0, // TODO: implementar contador de capturas
-      moves: 0 // TODO: implementar contador de jogadas
+      captures: humanCaptures, // <-- ALTERADO (usando o contador)
+      moves: humanMoves       // <-- ALTERADO (usando o contador)
     };
     
     saveGameResult(stats);
@@ -552,7 +563,7 @@ export function renderGameView(container) {
     setTimeout(() => {
       showVictoryModal({ 
         winner, 
-        stats,
+        stats, // <-- Passa as estatísticas corretas para o modal
         // 👇 ADICIONA OS CALLBACKS DE NAVEGAÇÃO
         onPlayAgain: () => navigateTo('game'),
         onGoToMenu: () => navigateTo('menu')
