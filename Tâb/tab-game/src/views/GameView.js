@@ -28,7 +28,7 @@ export function renderGameView(container) {
   );
   
   // Lê o nome do jogador guardado no localStorage
-  const username = localStorage.getItem('tab_username') || 'Você';
+  const username = localStorage.getItem('tab_username') || 'Utilizador';
 
   const root = document.createElement('div');
   root.className = 'game-scene';
