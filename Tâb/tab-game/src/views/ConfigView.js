@@ -26,7 +26,7 @@ export function renderConfigView(container) {
       <main class="config-content">
         <!-- ÁUDIO -->
         <section class="config-section">
-          <h2 class="section-title">🔊 Áudio</h2>
+          <h2 class="section-title"> Áudio</h2>
           
           <div class="config-group">
             <label class="config-label">Música de Fundo</label>
@@ -71,7 +71,7 @@ export function renderConfigView(container) {
 
         <!-- INTERFACE -->
         <section class="config-section">
-          <h2 class="section-title">🎨 Interface</h2>
+          <h2 class="section-title"> Interface</h2>
           
           <div class="config-group">
             <label class="config-label">Tema de Cores</label>
@@ -117,7 +117,7 @@ export function renderConfigView(container) {
     </div>
   `;
 
-  // ===== HANDLERS =====
+  // HANDLERS 
   
   // Voltar
   root.querySelector('#btn-back').onclick = () => {
@@ -180,7 +180,7 @@ export function renderConfigView(container) {
     document.body.classList.toggle('no-animations', state.config.animations === false);
   };
 
-  // ===== ATALHOS DE TECLADO =====
+  //  ATALHOS DE TECLADO 
   const handleKeyPress = (e) => {
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
       return;
@@ -193,7 +193,7 @@ export function renderConfigView(container) {
 
   document.addEventListener('keydown', handleKeyPress);
 
-  // ⚡ PERFORMANCE: Cleanup
+  // PERFORMANCE: Cleanup
   window.cleanupConfigView = () => {
     document.removeEventListener('keydown', handleKeyPress);
   };

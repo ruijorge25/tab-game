@@ -15,11 +15,9 @@ export const state = {
     },
     
     // Interface
-    theme: 'desert', // 'desert' | 'night' | 'ocean' | 'forest' | 'royal'
+    theme: 'desert', // 'desert' | 'night' | 'halloween' | 'christmas'
     animations: true,
     showHints: true,
-    animSpeed: 'normal', // 'fast' | 'normal' | 'slow'
-    pieceStyle: 'modern' // 'modern' | 'classic' | 'minimal'
   },
   game: { started: false, dice: null, turn: 1 }
 };

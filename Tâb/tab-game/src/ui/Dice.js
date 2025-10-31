@@ -1,5 +1,4 @@
-// src/ui/Dice.js - VERSÃO COM MICRO-ANIMAÇÕES E SOM
-import { playSound } from '../core/audio.js'; // <-- IMPORTA O playSound
+import { playSound } from '../core/audio.js'; 
 import { state } from '../core/state.js';
 
 export function Dice(onRoll){
@@ -31,7 +30,7 @@ export function Dice(onRoll){
     // Se já estiver desativado pela GameView, não faz nada
     if (btn.classList.contains('is-disabled')) return; 
     
-    playSound('flip'); // <-- TOCA O SOM AQUI
+    playSound('flip'); //TOCA O SOM AQUI
 
     // Remove glow
     btn.classList.remove('dice-ready');
@@ -52,11 +51,11 @@ export function Dice(onRoll){
     
     // Se as animações estiverem LIGADAS, faz o "bounce" e as "partículas"
     if (state.config.animations !== false) {
-      // 1. BOUNCE (movido para dentro do if)
+      // BOUNCE
       sticks.classList.add('dice-bounce');
       setTimeout(() => sticks.classList.remove('dice-bounce'), 600);
       
-      // 2. PARTÍCULAS (com a tua correção para o valor 1)
+      // PARTÍCULAS 
       if (value === 6 || value === 4 || value === 1) {
         createGoldenParticles(wrap);
       }
@@ -64,7 +63,6 @@ export function Dice(onRoll){
   };
 
   function setDiceVisual(val){
-    // 0 claras = 6, 1=1, 2=2, 3=3, 4=4
     const lightFaces = (val===6?0:val);
     arr.forEach((s,idx)=>{
       const light = idx < lightFaces;

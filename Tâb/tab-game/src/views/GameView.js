@@ -623,7 +623,7 @@ export function renderGameView(container) {
       showVictoryModal({ 
         winner, 
         stats, // <-- Passa as estatísticas corretas para o modal
-        // 👇 ADICIONA OS CALLBACKS DE NAVEGAÇÃO
+        // ADICIONA OS CALLBACKS DE NAVEGAÇÃO
         onPlayAgain: () => navigateTo('game'),
         onGoToMenu: () => navigateTo('menu')
       });
@@ -665,7 +665,7 @@ export function renderGameView(container) {
       humanIndicator.classList.remove('active-player');
     }
     
-    // ⏱️ Atualiza contadores de peças (usando a função do motor)
+    //  Atualiza contadores de peças (usando a função do motor)
     const counts = engine.getPieceCounts();
     root.querySelector('#counter-human').textContent = counts.player1;
     root.querySelector('#counter-ai').textContent = counts.player2;

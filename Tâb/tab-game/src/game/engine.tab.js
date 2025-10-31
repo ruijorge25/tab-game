@@ -67,7 +67,7 @@ export function createTabEngine(opts = {}) {
     return dice;
   }
 
-  // -------- Movimentação (regra oficial) --------
+  // Movimentação (regra oficial) 
   function getValidMovesFrom(piece, moves) {
     if (!moves || moves <= 0) return [];
     const player = piece.player;
@@ -135,7 +135,7 @@ export function createTabEngine(opts = {}) {
         // (2) Só entra na última fila se a fila inicial estiver vazia
         if (nxt.row === lastRow && hasOwnOnInitialRow(player)) continue;
 
-        // (3) "só pode ENTRAR... uma única vez"
+        // (3) "só pode ENTRAR uma única vez"
         const justEnteringLast = (nxt.row === lastRow && pos.row !== lastRow);
         
         if (enteredLast && justEnteringLast) {
@@ -191,12 +191,12 @@ export function createTabEngine(opts = {}) {
     }
 
     // fim da jogada
-    const extraTurn = [1, 4, 6].includes(dice); //
+    const extraTurn = [1, 4, 6].includes(dice);
     dice = null;
     return { captured, extraTurn };
   }
 
-  // -------- API pública do motor --------
+  // API pública do motor
   return {
     // leitura
     getColumns: () => columns,
@@ -278,7 +278,7 @@ export function createTabEngine(opts = {}) {
       const any = this.getSelectableCells().some(({ row, col }) => this.getValidMoves(row, col).length > 0);
       if (any) throw new Error('Ainda há jogadas possíveis.');
       
-      const extraTurn = [1, 4, 6].includes(dice); //
+      const extraTurn = [1, 4, 6].includes(dice); 
       
       selected = null;
       dice = null;

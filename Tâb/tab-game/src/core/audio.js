@@ -1,8 +1,5 @@
 import { state } from './state.js';
 
-// --- SEPARAÇÃO DE CANAIS ---
-
-// MAPA DE MÚSICAS (NOVO)
 // Define as músicas para cada tema
 const themeMusicMap = {
   'christmas': 'src/assets/sounds/Christmas_song.mp3',
@@ -15,17 +12,14 @@ let music = new Audio(themeMusicMap['default']);
 music.loop = true;
 
 const sfx = {
-  flip: new Audio('src/assets/sounds/flip.mp3'),
-  victory: new Audio('src/assets/sounds/victory.mp3'),
-  defeat: new Audio('src/assets/sounds/defeat.mp3'), // <-- ADICIONADO SOM DE DERROTA
-  goodcapture: new Audio('src/assets/sounds/goodcapture.mp3'),
-  badcapture: new Audio('src/assets/sounds/badcapture.mp3')
+  flip: new Audio('src/assets/sounds/flip.mp3'),//SOM DE ATIRAR OS PAUS
+  victory: new Audio('src/assets/sounds/victory.mp3'),//SOM DE VITORIA
+  defeat: new Audio('src/assets/sounds/defeat.mp3'), // SOM DE DERROTA
+  goodcapture: new Audio('src/assets/sounds/goodcapture.mp3'),//SOM DE CAPTURA
+  badcapture: new Audio('src/assets/sounds/badcapture.mp3')//SOM DE SER CAPTURADO
 };
-// --- FIM DA SEPARAÇÃO ---
 
-/**
- * Toca um EFEITO SONORO (SFX)
- */
+// Toca um EFEITO SONORO (SFX)
 export function playSound(name) {
   // 1. Verifica se os SFX estão ligados
   if (!state.config.audio.sfxOn) return;
@@ -45,13 +39,11 @@ export function playSound(name) {
   sound.play().catch(e => {});
 }
 
-/**
- * (NOVA FUNÇÃO) Define a música de fundo com base no tema
- */
+// Define a música de fundo com base no tema
 export function setThemeMusic(theme) {
   const newSrc = themeMusicMap[theme] || themeMusicMap['default'];
   
-  // Verifica se o URL completo termina com o novo caminho (evita recarregar desnecessariamente)
+  // Verifica se o URL completo termina com o novo caminho 
   if (music.src && music.src.endsWith(newSrc)) {
     return; // Já está a tocar a música certa
   }

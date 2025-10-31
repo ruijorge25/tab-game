@@ -1,10 +1,4 @@
-/**
- * Sistema de Animações Premium com Canvas (VERSÃO 2 CAMADAS SIMPLIFICADA)
- * Gestão de efeitos visuais para cada tema
- * AGORA: Pai Natal à frente e da direita para a esquerda. Resto da neve e luzes atrás.
- */
 import { state } from './state.js';
-// --- ALTERADO: Duas camadas de canvas ---
 let canvasBg = null; // Canvas de Fundo (atrás do jogo)
 let ctxBg = null;
 let canvasFg = null; // Canvas da Frente (à frente do jogo)
@@ -12,8 +6,7 @@ let ctxFg = null;
 let animationFrameBg = null;
 let animationFrameFg = null;
 let particlesBg = []; // Partículas de Fundo
-let particlesFg = []; // Partículas da Frente (APENAS PAI NATAL)
-// --- FIM DA ALTERAÇÃO ---
+let particlesFg = []; // Partículas da Frente 
 
 let currentTheme = null;
 
@@ -28,15 +21,13 @@ pumpkinImage.onerror = () => {
   console.error("Falha ao carregar a imagem da abóbora em src/assets/patterns/abobora.png");
 };
 
-/**
- * Inicializa o canvas de animações
- */
+//Inicializa o canvas de animações
 export function initAnimationCanvas() {
   // Remove canvases anteriores se existirem
   if (canvasBg) canvasBg.remove();
   if (canvasFg) canvasFg.remove();
 
-  // --- ALTERADO: Cria Canvas de FUNDO (BG) ---
+  // Cria Canvas de FUNDO (BG) 
   canvasBg = document.createElement('canvas');
   canvasBg.id = 'animation-canvas-bg';
   canvasBg.style.position = 'fixed';
@@ -45,12 +36,12 @@ export function initAnimationCanvas() {
   canvasBg.style.width = '100%';
   canvasBg.style.height = '100%';
   canvasBg.style.pointerEvents = 'none';
-  canvasBg.style.zIndex = '0'; // <-- Fica ATRÁS do jogo
+  canvasBg.style.zIndex = '0'; // Fica ATRÁS do jogo
   
   document.body.appendChild(canvasBg);
   ctxBg = canvasBg.getContext('2d');
 
-  // --- ADICIONADO: Cria Canvas da FRENTE (FG) ---
+  //Cria Canvas da FRENTE (FG) 
   canvasFg = document.createElement('canvas');
   canvasFg.id = 'animation-canvas-fg';
   canvasFg.style.position = 'fixed';
@@ -58,8 +49,8 @@ export function initAnimationCanvas() {
   canvasFg.style.left = '0';
   canvasFg.style.width = '100%';
   canvasFg.style.height = '100%';
-  canvasFg.style.pointerEvents = 'none'; // <-- Permite cliques através dele
-  canvasFg.style.zIndex = '100'; // <-- Fica À FRENTE do jogo
+  canvasFg.style.pointerEvents = 'none'; // Permite cliques através dele
+  canvasFg.style.zIndex = '100'; // Fica À FRENTE do jogo
   
   document.body.appendChild(canvasFg);
   ctxFg = canvasFg.getContext('2d');
@@ -68,11 +59,9 @@ export function initAnimationCanvas() {
   window.addEventListener('resize', resizeCanvas);
 }
 
-/**
- * Ajusta tamanho do canvas
- */
+// Ajusta tamanho do canvas
 function resizeCanvas() {
-  // --- ALTERADO: Redimensiona AMBOS os canvases ---
+  //Redimensiona AMBOS os canvases
   if (canvasBg) {
     canvasBg.width = window.innerWidth;
     canvasBg.height = window.innerHeight;
@@ -85,11 +74,9 @@ function resizeCanvas() {
   }
 }
 
-/**
- * Para todas as animações
- */
+// Para todas as animações
 export function stopAnimations() {
-  // --- ALTERADO: Para AMBOS os loops ---
+  // Para AMBOS os loops 
   if (animationFrameBg) cancelAnimationFrame(animationFrameBg);
   if (animationFrameFg) cancelAnimationFrame(animationFrameFg);
   animationFrameBg = null;
@@ -101,9 +88,7 @@ export function stopAnimations() {
   if (ctxFg && canvasFg) ctxFg.clearRect(0, 0, canvasFg.width, canvasFg.height);
 }
 
-/**
- * Inicia animações baseadas no tema
- */
+// Inicia animações baseadas no tema
 export function startThemeAnimation(theme) {
   stopAnimations();
   currentTheme = theme;
@@ -136,9 +121,7 @@ export function startThemeAnimation(theme) {
   });
 }
 
-// ============================================
 // FUNÇÕES DE ANIMAÇÃO DE FUNDO (BG Loop)
-// ============================================
 function animateBackground() {
   if (currentTheme !== 'desert-night' && currentTheme !== 'halloween' && currentTheme !== 'christmas') {
     cancelAnimationFrame(animationFrameBg);
@@ -149,16 +132,13 @@ function animateBackground() {
   ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
   
   particlesBg.forEach(particle => {
-    // --- MODIFICADO ---
     if (state.config.animations !== false) {
       particle.update(); // Só atualiza se animações ligadas
     }
-    // --- FIM ---
     particle.draw(ctxBg); 
   });
   
   if (currentTheme === 'halloween' && lightning) {
-    // --- MODIFICADO ---
     if (state.config.animations !== false) {
       lightningTimer++;
       if (lightningTimer > 400 && Math.random() < 0.008) {
@@ -167,11 +147,10 @@ function animateBackground() {
       }
       lightning.update();
     }
-    // --- FIM ---
     lightning.draw(ctxBg);
   }
 
-  // --- ADICIONADO: Cabo das luzes de natal no BG ---
+  //Cabo das luzes de natal no BG
   if (currentTheme === 'christmas') {
     ctxBg.strokeStyle = 'rgba(40, 40, 40, 0.8)';
     ctxBg.lineWidth = 3;
@@ -180,15 +159,11 @@ function animateBackground() {
     ctxBg.lineTo(canvasBg.width, 30);
     ctxBg.stroke();
   }
-  // --- FIM DA ADIÇÃO ---
   
   animationFrameBg = requestAnimationFrame(animateBackground);
 }
 
-
-// ============================================
-// FUNÇÕES DE ANIMAÇÃO DA FRENTE (FG Loop) - APENAS PAI NATAL
-// ============================================
+// FUNÇÕES DE ANIMAÇÃO DA FRENTE (FG Loop)
 function animateForeground() {
   if (currentTheme !== 'christmas') { // APENAS para o tema Christmas
     cancelAnimationFrame(animationFrameFg);
@@ -199,11 +174,9 @@ function animateForeground() {
   ctxFg.clearRect(0, 0, canvasFg.width, canvasFg.height);
   
   particlesFg.forEach(particle => {
-    // --- MODIFICADO ---
     if (state.config.animations !== false) {
       particle.update(); // Só atualiza se animações ligadas
     }
-    // --- FIM ---
     particle.draw(ctxFg); 
   });
 
@@ -211,9 +184,7 @@ function animateForeground() {
 }
 
 
-// ============================================
-// DESERT NIGHT - Céu Estrelado Profissional
-// ============================================
+// DESERT NIGHT - Céu Estrelado
 
 class Star {
   constructor() {
@@ -230,7 +201,7 @@ class Star {
     this.opacity = 0.3 + Math.sin(this.twinklePhase) * 0.4;
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
@@ -251,7 +222,7 @@ class ShootingStar {
     this.y = Math.random() * canvasBg.height * 0.5; // Usa canvasBg
     this.length = Math.random() * 80 + 40;
     this.speed = Math.random() * 8 + 6;
-    this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5; // ~45 graus
+    this.angle = Math.PI / 4 + (Math.random() - 0.5) * 0.5; 
     this.opacity = 1;
     this.trailOpacity = 0.6;
     this.vx = Math.cos(this.angle) * this.speed;
@@ -272,7 +243,7 @@ class ShootingStar {
     }
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto 
     if (state.config.animations === false) return;
     if (this.opacity <= 0) return;
     
@@ -291,7 +262,7 @@ class ShootingStar {
     ctx.lineTo(this.x, this.y);
     ctx.stroke();
     
-    // Head (estrela brilhante)
+    //estrela brilhante
     ctx.beginPath();
     ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
     ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
@@ -303,15 +274,15 @@ class ShootingStar {
 }
 
 function initDesertNight() {
-  particlesBg = []; // Usa particlesBg
+  particlesBg = []; 
   
-  // Criar estrelas fixas (150-200)
+  // Criar estrelas fixas 
   const starCount = 150 + Math.floor(Math.random() * 50);
   for (let i = 0; i < starCount; i++) {
     particlesBg.push(new Star()); // Adiciona a particlesBg
   }
   
-  // Criar 3-5 estrelas cadentes
+  // Criar estrelas cadentes
   const shootingStarCount = 3 + Math.floor(Math.random() * 3);
   for (let i = 0; i < shootingStarCount; i++) {
     particlesBg.push(new ShootingStar()); // Adiciona a particlesBg
@@ -321,10 +292,8 @@ function initDesertNight() {
 }
 
 
-// ============================================
-// HALLOWEEN - Partículas Místicas + Atmosfera
-// ============================================
 
+// HALLOWEEN - Partículas Místicas + Atmosfera
 class MysticParticle {
   constructor() {
     this.x = Math.random() * canvasBg.width;
@@ -355,7 +324,7 @@ class MysticParticle {
     }
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = this.color;
@@ -406,7 +375,7 @@ class Bat {
     }
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto 
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.scale(this.size, this.size);
@@ -464,40 +433,30 @@ class Bat {
   }
 }
 
-// Abóbora (JS Canvas - VERSÃO FINAL)
+// Abóbora 
 class Pumpkin {
   constructor() {
     this.size = 100;
     this.glowPhase = Math.random() * Math.PI * 2;
     this.glowSpeed = 0.03;
-
-    // --- ADICIONADO: Limites mínimos ---
-    // Baseado no CSS do .menu-shell (min-height: 720px)
-    // e na largura mínima dos painéis (320+320+gap)
     this.minWidth = 900; 
     this.minHeight = 720;
   }
 
   update() {
-    // --- MODIFICADO ---
     if (state.config.animations !== false) {
       this.glowPhase += this.glowSpeed;
     }
-    // --- FIM ---
   }
   draw(ctx) {
-    // 'ctx.canvas' é o 'canvasFg', que tem o tamanho da JANELA
-
-    // --- REGRA DE DESAPARECER ---
     // Se a janela for mais pequena que o menu, não desenha
     if (!pumpkinLoaded || ctx.canvas.width < this.minWidth || ctx.canvas.height < this.minHeight) {
       return; // Desaparece
     }
-    // --- FIM DA REGRA ---
 
     const glow = 0.8 + Math.sin(this.glowPhase) * 0.2;
 
-    // Posição "fixa" no canto da JANELA
+    // Posição fixa no canto da JANELA
     const x = ctx.canvas.width - 100; 
     const y = ctx.canvas.height - 80;
 
@@ -523,27 +482,25 @@ class Pumpkin {
 class Fog {
   constructor() {
     this.x = Math.random() * canvasBg.width;
-    this.y = Math.random() * canvasBg.height; // <-- ALTERADO: Y aleatório
+    this.y = Math.random() * canvasBg.height; 
     this.vx = (Math.random() - 0.5) * 0.3;
-    this.vy = (Math.random() - 0.5) * 0.2; // <-- ADICIONADO: VY aleatório
+    this.vy = (Math.random() - 0.5) * 0.2; 
     this.size = Math.random() * 150 + 100;
     this.opacity = Math.random() * 0.15 + 0.1;
   }
   
   update() {
     this.x += this.vx;
-    this.y += this.vy; // <-- ADICIONADO
+    this.y += this.vy; 
     
-    // Wrap around X (horizontal)
     if (this.x < -this.size) this.x = canvasBg.width + this.size;
     if (this.x > canvasBg.width + this.size) this.x = -this.size;
 
-    // Wrap around Y (vertical)
     if (this.y < -this.size) this.y = canvasBg.height + this.size;
     if (this.y > canvasBg.height + this.size) this.y = -this.size;
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto 
     const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
     gradient.addColorStop(0, `rgba(147, 112, 219, ${this.opacity})`);
     gradient.addColorStop(1, 'rgba(147, 112, 219, 0)');
@@ -554,7 +511,8 @@ class Fog {
 }
 
 let lightningTimer = 0;
-// Relâmpago (efeito visual de raio)
+
+// Relâmpago 
 class Lightning {
   constructor() {
     this.active = false;
@@ -615,7 +573,7 @@ class Lightning {
     }
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto 
     if (!this.active) return;
     
     ctx.save();
@@ -676,7 +634,7 @@ class Lightning {
 let lightning = null;
 
 function initHalloween() {
-  particlesBg = []; // Usa particlesBg
+  particlesBg = []; 
   
   // Partículas místicas
   for (let i = 0; i < 30; i++) {
@@ -698,21 +656,19 @@ function initHalloween() {
   lightning = new Lightning();
   lightningTimer = 0;
   
-  animateBackground(); // Inicia o loop de Fundo
+  animateBackground(); 
 }
 
-// ============================================
-// CHRISTMAS - Classes
-// ============================================
 
-// --- 1. Flocos de Neve (BG) ---
+// CHRISTMAS 
+//Flocos de Neve 
 class Snowflake {
   constructor() {
     this.reset();
   }
   
   reset() {
-    this.x = Math.random() * canvasBg.width; // Usa canvasBg
+    this.x = Math.random() * canvasBg.width; 
     this.y = -10;
     this.radius = Math.random() * 4 + 2;
     this.speed = Math.random() * 1.5 + 0.8;
@@ -735,7 +691,7 @@ class Snowflake {
     if (this.x < -10) this.x = canvasBg.width + 10;
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto 
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.globalAlpha = this.opacity;
@@ -764,13 +720,13 @@ class Snowflake {
   }
 }
 
-// --- 2. Luzes de Natal (BG) ---
+//Luzes de Natal
 class ChristmasLight {
   constructor(x, index) {
     this.x = x;
     this.y = 30; // Movido para o topo
     this.index = index;
-    this.colors = ['#c41e3a', '#ffffff', '#ffd700', '#e6f7ff']; // Cores originais
+    this.colors = ['#c41e3a', '#ffffff', '#ffd700', '#e6f7ff']; // Cores
     this.color = this.colors[index % this.colors.length];
     this.glowPhase = Math.random() * Math.PI * 2;
     this.glowSpeed = 0.06 + Math.random() * 0.04;
@@ -778,14 +734,12 @@ class ChristmasLight {
   }
   
   update() {
-    // --- MODIFICADO ---
     if (state.config.animations !== false) {
       this.glowPhase += this.glowSpeed;
     }
-    // --- FIM ---
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto 
     const glow = 0.6 + Math.sin(this.glowPhase) * 0.4;
     const radius = this.baseRadius + glow * 2;
     
@@ -828,23 +782,23 @@ class ChristmasLight {
   }
 }
 
-// --- 3. Pai Natal (FG) ---
+//Pai Natal
 class SantaSleigh {
   constructor() {
     this.reset();
   }
   
   reset() {
-    // --- ALTERADO: Começa fora da tela à DIREITA e se move para ESQUERDA ---
-    this.x = canvasBg.width + 300; // Começa à direita (USA canvasBg)
-    this.y = Math.random() * (canvasBg.height * 0.4) + 80; // Usa canvasBg
+    //Começa fora da tela à DIREITA e move-se para ESQUERDA 
+    this.x = canvasBg.width + 300; // Começa à direita
+    this.y = Math.random() * (canvasBg.height * 0.4) + 80; 
     this.speed = -(1 + Math.random() * 1.5); // Velocidade NEGATIVA para ir para a esquerda
     this.wavePhase = 0;
     this.waveSpeed = 0.05;
     this.scale = 0.5 + Math.random() * 0.2;
 
-    // Ajusta a altura Y para não ficar tapado pela neve do chão (no BG)
-    const snowLine = canvasBg.height - 80; // (USA canvasBg) 
+    // Ajusta a altura Y para não ficar tapado pela neve do chão 
+    const snowLine = canvasBg.height - 80; 
     if (this.y > snowLine) {
       this.y = snowLine;
     }
@@ -856,13 +810,12 @@ class SantaSleigh {
     
     this.y += Math.sin(this.wavePhase) * 0.5;
     
-    // --- ALTERADO: Reset quando sair completamente pela ESQUERDA ---
     if (this.x < -300) {
       this.reset();
     }
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto 
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.scale(this.scale, this.scale);
@@ -871,10 +824,9 @@ class SantaSleigh {
     const jumpPhase = this.wavePhase;
 
 
-    // Renas (3 renas)
+    // Renas 
     for (let i = 0; i < 3; i++) {
-      // (As tuas funções de desenho 'drawReindeer' serão usadas aqui)
-      const offsetX = (i * 60) - 220; // Põe-nas em -220, -160, -100
+      const offsetX = (i * 60) - 220; 
       const jumpY = Math.sin((jumpPhase + i * 0.5) * 2) * 8;
       this.drawReindeer(ctx, offsetX, jumpY);
     }
@@ -922,7 +874,7 @@ class SantaSleigh {
     ctx.lineTo(-13, -19);
     ctx.stroke();
     
-    // Nariz vermelho (Rudolph!)
+    // Nariz vermelho
     ctx.fillStyle = '#ff0000';
     ctx.shadowBlur = 8;
     ctx.shadowColor = '#ff0000';
@@ -956,7 +908,7 @@ class SantaSleigh {
     ctx.save();
     ctx.translate(x, y);
     
-    // Base do trenó (vermelho)
+    // Base do trenó 
     ctx.fillStyle = '#cc0000';
     ctx.strokeStyle = '#8B0000';
     ctx.lineWidth = 2;
@@ -995,7 +947,7 @@ class SantaSleigh {
     ctx.save();
     ctx.translate(x, y);
     
-    // Corpo (vermelho)
+    // Corpo
     ctx.fillStyle = '#cc0000';
     ctx.beginPath();
     ctx.ellipse(0, 5, 18, 22, 0, 0, Math.PI * 2);
@@ -1067,13 +1019,13 @@ class SantaSleigh {
   }
 }
 
-// --- 4. Neve Acumulada (BG) ---
+// Neve Acumulada 
 class SnowDrift {
   constructor() {
-    this.yBase = canvasBg.height - 60; // Altura base da neve (usa canvasBg)
+    this.yBase = canvasBg.height - 60; // Altura base da neve
     this.points = [];
     
-    for (let x = -100; x <= canvasBg.width + 100; x += 50) { // Usa canvasBg
+    for (let x = -100; x <= canvasBg.width + 100; x += 50) { 
       this.points.push({
         x: x,
         y: this.yBase + Math.random() * 20
@@ -1083,14 +1035,14 @@ class SnowDrift {
   
   update() { /* Estático */ }
   
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+  draw(ctx) { // Recebe o contexto 
     ctx.save();
     ctx.fillStyle = 'white';
     ctx.shadowBlur = 30;
     ctx.shadowColor = 'white';
     
     ctx.beginPath();
-    ctx.moveTo(-100, canvasBg.height + 10); // Canto inferior esquerdo (usa canvasBg)
+    ctx.moveTo(-100, canvasBg.height + 10); // Canto inferior esquerdo 
     ctx.lineTo(-100, this.yBase);
     
     for (let i = 0; i < this.points.length - 1; i++) {
@@ -1101,8 +1053,8 @@ class SnowDrift {
       ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
     }
     
-    ctx.lineTo(canvasBg.width + 100, this.yBase); // Linha até ao fim (usa canvasBg)
-    ctx.lineTo(canvasBg.width + 100, canvasBg.height + 10); // Canto inferior direito (usa canvasBg)
+    ctx.lineTo(canvasBg.width + 100, this.yBase); // Linha até ao fim 
+    ctx.lineTo(canvasBg.width + 100, canvasBg.height + 10); // Canto inferior direito 
     ctx.closePath();
     ctx.fill();
     
@@ -1112,36 +1064,36 @@ class SnowDrift {
 }
 
 
-// --- FUNÇÕES DE INICIALIZAÇÃO DE TEMA ---
+// FUNÇÕES DE INICIALIZAÇÃO DE TEMA
 
 function initChristmas() {
   particlesBg = []; // Partículas para o fundo
   particlesFg = []; // Partículas para a frente
   
-  // Neve abundante (flocos a cair) -> BG
+  // Neve abundante (flocos a cair) 
   const snowflakeCount = 150;
   for (let i = 0; i < snowflakeCount; i++) {
     const snowflake = new Snowflake();
-    snowflake.y = Math.random() * canvasBg.height; // Usa canvasBg
+    snowflake.y = Math.random() * canvasBg.height; 
     particlesBg.push(snowflake);
   }
   
-  // Luzes de Natal na borda superior -> BG
+  // Luzes de Natal na borda superior 
   const lightSpacing = 40;
-  const lightCount = Math.floor(canvasBg.width / lightSpacing) + 2; // Usa canvasBg
+  const lightCount = Math.floor(canvasBg.width / lightSpacing) + 2; 
   for (let i = 0; i < lightCount; i++) {
     particlesBg.push(new ChristmasLight(i * lightSpacing + 20, i));
   }
   
-  // Pai Natal -> FG
+  // Pai Natal 
   particlesBg.push(new SantaSleigh());
   
   const sleigh2 = new SantaSleigh();
-  sleigh2.x = canvasBg.width + 800; // Começa mais à direita, usa canvasFg
+  sleigh2.x = canvasBg.width + 800; // Começa mais à direita
   sleigh2.speed *= 1.2;
   particlesFg.push(sleigh2);
   
-  // Adiciona a neve acumulada -> BG
+  // Adiciona a neve acumulada 
   particlesBg.push(new SnowDrift());
   
   // Inicia loops de animação

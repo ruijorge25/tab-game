@@ -13,7 +13,7 @@
   100%{ transform: scale(1) }
 }
 
-/* ADICIONADO: Desliga animação de float (ex: Título no Menu) */
+/*Desliga animação de float*/
 .no-animations .float-sm {
   animation: none;
 }

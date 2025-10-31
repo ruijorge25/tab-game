@@ -1,6 +1,4 @@
-// src/game/ai.js - VERSÃO AVANÇADA (com Nível Difícil)
-
-// --- Constantes de Probabilidade (Baseado em engine.tab.js) ---
+// --- Constantes de Probabilidade 
 const DICE_PROBABILITIES = {
   1: 0.25,    // (0.3125 - 0.0625)
   2: 0.375,   // (0.6875 - 0.3125)
@@ -23,7 +21,6 @@ export function findBestMove(level, engine) {
   // --- DEBUG LOG INÍCIO ---
   console.log(`--- AI (Nível: ${level}) a avaliar ${allMoves.length} jogadas (Dado=${engine.getDice()}) ---`);
   if (allMoves.length === 0) console.warn("AI: Lista de jogadas está vazia!");
-  // --- FIM DEBUG LOG ---
 
   let bestMove;
   let bestScore = -Infinity; // Para o log final
@@ -58,21 +55,18 @@ export function findBestMove(level, engine) {
   } else {
     console.error("AI: Não foi escolhida nenhuma jogada!");
   }
-  // --- FIM DEBUG LOG ---
+
   
   return bestMove;
 }
 
-// -----------------------------------------------------------------
 // NÍVEL FÁCIL: Totalmente aleatório
-// -----------------------------------------------------------------
 function findEasyMove(engine, allMoves) {
   return allMoves[Math.floor(Math.random() * allMoves.length)];
 }
 
-// -----------------------------------------------------------------
-// NÍVEL MÉDIO: Heurística Greedy (Score Presente)
-// -----------------------------------------------------------------
+
+// NÍVEL MÉDIO: Heurística Greedy 
 function findMediumMove(engine, allMoves) {
   const player = engine.getCurrentPlayer();
   const initialRow = (player === 1) ? 3 : 0;
@@ -88,7 +82,6 @@ function findMediumMove(engine, allMoves) {
       `Jogada [${move.piece.row},${move.piece.col}]->[${move.target.row},${move.target.col}]: ` +
       `Base(${presentScore.toFixed(0)}) = ${finalScore.toFixed(2)}`
     );
-    // ---- FIM DEBUG LOG ----
 
     return { move, score: finalScore };
   });
@@ -99,9 +92,9 @@ function findMediumMove(engine, allMoves) {
   return scoredMoves[0]; // Devolve o objeto {move, score}
 }
 
-// -----------------------------------------------------------------
-// NÍVEL DIFÍCIO: Heurística Ponderada (Presente + Risco + Ameaça)
-// -----------------------------------------------------------------
+
+// NÍVEL DIFÍCIL: Heurística Ponderada (Presente + Risco + Ameaça)
+
 function findHardMove(engine, allMoves) {
   const player = engine.getCurrentPlayer(); // AI (2)
   const opponent = (player === 1) ? 2 : 1; // Humano (1)
@@ -127,7 +120,6 @@ function findHardMove(engine, allMoves) {
   }
   
   console.log(`AI MODO: ${mode} (Eu: ${myCount} vs Adv: ${oppCount})`);
-  // ---- FIM DA LÓGICA DE ESTADO ----
 
 
   const RISK_MULTIPLIER = -110; 
@@ -161,7 +153,7 @@ function findHardMove(engine, allMoves) {
       }
     }
     currentRiskProb = [...diceThatCanHitMe].reduce((sum, d) => sum + DICE_PROBABILITIES[d], 0);
-    currentRiskMap.set(piece, currentRiskProb * RISK_MULTIPLIER); // Ex: -31.3
+    currentRiskMap.set(piece, currentRiskProb * RISK_MULTIPLIER); 
   }
 
   // Cache da Ameaça da Posição Atual
@@ -179,10 +171,10 @@ function findHardMove(engine, allMoves) {
       }
     }
     currentThreatProb = [...diceThatCanHitThem].reduce((sum, d) => sum + DICE_PROBABILITIES[d], 0);
-    currentThreatMap.set(piece, currentThreatProb * THREAT_MULTIPLIER); // Ex: +37.5
+    currentThreatMap.set(piece, currentThreatProb * THREAT_MULTIPLIER); 
   }
   
-  // --- AVALIAÇÃO FINAL DE CADA JOGADA (COM A LÓGICA LÍQUIDA) ---
+  //AVALIAÇÃO FINAL DE CADA JOGADA 
   const scoredMoves = allMoves.map(move => {
     const targetPos = move.target;
     let logExtras = ""; 
@@ -191,8 +183,8 @@ function findHardMove(engine, allMoves) {
     const { score: presentScore, reason: baseReason } = getPresentScore(move, engine, player, initialRow, lastRow);
     let finalReason = baseReason; // Começa com a razão base
 
-    // (B) Cálculo de Risco LÍQUIDO (Defensivo)
-    const riskOfOrigin = currentRiskMap.get(move.piece) || 0;     // Ex: -31.3 (em perigo)
+    // (B) Cálculo de Risco (defensivo)
+    const riskOfOrigin = currentRiskMap.get(move.piece) || 0;
     
     let riskOfDestination = 0;
     const diceThatCanHitDest = new Set();
@@ -205,7 +197,7 @@ function findHardMove(engine, allMoves) {
       }
     }
     const totalRiskProb = [...diceThatCanHitDest].reduce((sum, d) => sum + DICE_PROBABILITIES[d], 0);
-    riskOfDestination = totalRiskProb * RISK_MULTIPLIER; // Ex: -41 (destino perigoso)
+    riskOfDestination = totalRiskProb * RISK_MULTIPLIER; 
 
     let netRisk = riskOfDestination - riskOfOrigin; 
 
@@ -217,8 +209,8 @@ function findHardMove(engine, allMoves) {
       finalReason = "Mover para uma casa mais segura.";
     }
 
-    // (C) Cálculo de Ameaça LÍQUIDA (Ofensivo)
-    const threatOfOrigin = currentThreatMap.get(move.piece) || 0;  // Ex: +25 (ameaça atual)
+    // (C) Cálculo de Ameaça (Ofensivo)
+    const threatOfOrigin = currentThreatMap.get(move.piece) || 0;
     
     let threatOfDestination = 0;
     const diceThatCanHitThem = new Set();
@@ -232,7 +224,7 @@ function findHardMove(engine, allMoves) {
       }
     }
     const totalThreatProb = [...diceThatCanHitThem].reduce((sum, d) => sum + DICE_PROBABILITIES[d], 0);
-    threatOfDestination = (totalThreatProb * THREAT_MULTIPLIER); // Ex: 0 (ameaça destino)
+    threatOfDestination = (totalThreatProb * THREAT_MULTIPLIER); 
 
     let netThreat = threatOfDestination - threatOfOrigin; 
 
@@ -249,10 +241,10 @@ function findHardMove(engine, allMoves) {
         finalReason = "Capturar uma peça adversária!";
     }
     
-    // Score final = Presente + Risco(Líquido) + Ameaça(Líquida) + Aleatório
+    // Score final = Presente + Risco + Ameaça + Aleatório
     const finalScore = presentScore + netRisk + netThreat + (Math.random() * 2);
 
-    // ---- DEBUG LOG (NÍVEL DIFÍCIO) ----
+    // DEBUG LOG (NÍVEL DIFÍCIL)
     console.log(
       `Jogada [${move.piece.row},${move.piece.col}]->[${targetPos.row},${targetPos.col}]: ` +
       `Base(${presentScore.toFixed(0)}) ` +
@@ -261,7 +253,6 @@ function findHardMove(engine, allMoves) {
       `${logExtras}` + 
       ` = ${finalScore.toFixed(2)}`
     );
-    // ---- FIM DEBUG LOG ----
 
     return { move, score: finalScore, reason: finalReason };
   });
@@ -272,11 +263,7 @@ function findHardMove(engine, allMoves) {
   return scoredMoves[0]; 
 }
 
-
-// -----------------------------------------------------------------
 // FUNÇÕES-AUXILIAR
-// -----------------------------------------------------------------
-
 /**
  * Lógica de pontuação do "Nível Médio".
  * Calcula o valor *imediato* (presente) de uma jogada.
@@ -309,7 +296,7 @@ function getPresentScore(move, engine, player, initialRow, lastRow) {
   } 
   else if (isMovingOnStartRow) {
     if (!move.piece.hasMoved) {
-      score += 30; // "Desprender" (VALIOSO)
+      score += 30; // "Desprender"
       reason = "Desbloquear uma peça na linha inicial.";
     } else {
       score += 10; // Mover peça já solta na linha inicial
@@ -321,8 +308,8 @@ function getPresentScore(move, engine, player, initialRow, lastRow) {
     reason = "Avançar uma peça em jogo.";
   }
   
-  // ---- LÓGICA DO BÓNUS FINAL (A TUA IDEIA) ----
-  // (Aplica apenas se o destino for a linha final E não for uma captura)
+  //LÓGICA DO BÓNUS FINAL
+  // (Aplica apenas se o destino for a linha final e não for uma captura)
   if (move.target.row === lastRow && score < 100) { 
     if (engine.hasPiecesOnInitialRow(player)) {
       // MAU: A linha inicial AINDA TEM PEÇAS. A peça vai ficar presa.
@@ -338,9 +325,8 @@ function getPresentScore(move, engine, player, initialRow, lastRow) {
   return { score, reason }; // <-- Retorna um objeto
 }
 
-/**
- * Retorna um array com todos os movimentos legais para o jogador atual.
- */
+// Retorna um array com todos os movimentos legais para o jogador atual.
+
 function getAllPossibleMoves(engine) {
   const allMoves = [];
   const pieces = engine.getSelectableCells(); // Peças do jogador atual
@@ -356,9 +342,7 @@ function getAllPossibleMoves(engine) {
   return allMoves;
 }
 
-/**
- * Verifica se resta apenas uma peça do jogador na sua linha inicial.
- */
+//Verifica se resta apenas uma peça do jogador na sua linha inicial.
 function isLastPieceOnInitialRow(engine, player) {
   const initialRow = (player === 1) ? 3 : 0;
   const board = engine.getBoard();
