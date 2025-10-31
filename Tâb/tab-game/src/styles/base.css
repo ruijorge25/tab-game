@@ -21,6 +21,6 @@ body {
   margin: 10px;
   transition: 0.2s;
 }
-/* btn-primary styling moved to themes.css for theme consistency */
+
 .btn-secondary { background: #3a86ff; color: white; }
 .btn-secondary:hover { background: #5aa1ff; }

@@ -1,5 +1,4 @@
-// Adapter mínimo que “normaliza” a API para a tua UI atual.
-// Podes evoluir este wrapper depois (ex.: eventos, gravação de scores, etc.)
+// Adapter mínimo que “normaliza” a API para a UI atual.
 
 export function createEngineAdapter(coreEngine) {
   return {

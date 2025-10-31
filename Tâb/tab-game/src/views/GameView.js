@@ -304,7 +304,7 @@ export function renderGameView(container) {
     const popover = document.createElement('div');
     popover.className = 'shortcuts-popover';
     popover.innerHTML = `
-      <h4 style="color:var(--sand);font-size:0.95rem;margin-bottom:12px;font-weight:700;text-align:center;">⌨️ Atalhos de Teclado</h4>
+      <h4 style="color:var(--sand);font-size:0.95rem;margin-bottom:12px;font-weight:700;text-align:center;">Atalhos de Teclado</h4>
       <div class="shortcuts-list">
         <div class="shortcut-item">
           <kbd class="kbd">Espaço</kbd>
@@ -416,6 +416,11 @@ export function renderGameView(container) {
     if (key === 'h') {
       // toast('Funcionalidade de dicas em desenvolvimento.', 'info'); // <-- Remove
       showHint(); // <-- Adiciona
+    }
+
+    // R: Mostrar Regras (ADICIONADO)
+    if (key === 'r') {
+      showRulesModal();
     }
   };
 
@@ -618,7 +623,7 @@ export function renderGameView(container) {
       showVictoryModal({ 
         winner, 
         stats, // <-- Passa as estatísticas corretas para o modal
-        // 👇 ADICIONA OS CALLBACKS DE NAVEGAÇÃO
+        // ADICIONA OS CALLBACKS DE NAVEGAÇÃO
         onPlayAgain: () => navigateTo('game'),
         onGoToMenu: () => navigateTo('menu')
       });
@@ -660,7 +665,7 @@ export function renderGameView(container) {
       humanIndicator.classList.remove('active-player');
     }
     
-    // ⏱️ Atualiza contadores de peças (usando a função do motor)
+    //  Atualiza contadores de peças (usando a função do motor)
     const counts = engine.getPieceCounts();
     root.querySelector('#counter-human').textContent = counts.player1;
     root.querySelector('#counter-ai').textContent = counts.player2;

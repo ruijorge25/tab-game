@@ -12,7 +12,7 @@ const routes = {
 };
 
 export function initRouter() {
-  console.log('✅ Router pronto');
+  console.log('Router pronto');
 }
 
 export function navigateTo(view) {
@@ -22,7 +22,7 @@ export function navigateTo(view) {
     return;
   }
   
-  // ⚡ PERFORMANCE: Limpar event listeners da view anterior
+  // PERFORMANCE: Limpar event listeners da view anterior
   if (window.cleanupMenuView) {
     window.cleanupMenuView();
     window.cleanupMenuView = null;

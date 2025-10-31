@@ -1,5 +1,5 @@
-// src/ui/Dice.js - VERSÃO COM MICRO-ANIMAÇÕES E SOM
-import { playSound } from '../core/audio.js'; // <-- IMPORTA O playSound
+import { playSound } from '../core/audio.js'; 
+import { state } from '../core/state.js';
 
 export function Dice(onRoll){
   const wrap = document.createElement('div');
@@ -30,7 +30,7 @@ export function Dice(onRoll){
     // Se já estiver desativado pela GameView, não faz nada
     if (btn.classList.contains('is-disabled')) return; 
     
-    playSound('flip'); // <-- TOCA O SOM AQUI
+    playSound('flip'); //TOCA O SOM AQUI
 
     // Remove glow
     btn.classList.remove('dice-ready');
@@ -39,24 +39,30 @@ export function Dice(onRoll){
     btn.classList.add('is-disabled'); 
     btn.style.opacity = '0.6';
 
-    arr.forEach(s => s.classList.add('shuffling'));
-    await new Promise(r=>setTimeout(r,800));
-    arr.forEach(s => s.classList.remove('shuffling'));
+    // Se as animações estiverem LIGADAS, faz o "shuffle"
+    if (state.config.animations !== false) {
+      arr.forEach(s => s.classList.add('shuffling'));
+      await new Promise(r=>setTimeout(r,800));
+      arr.forEach(s => s.classList.remove('shuffling'));
+    }
+
     const value = await onRoll?.();
     setDiceVisual(value);
     
-    //  BOUNCE quando resultado aparece
-    sticks.classList.add('dice-bounce');
-    setTimeout(() => sticks.classList.remove('dice-bounce'), 600);
-    
-    //  PARTÍCULAS DOURADAS para 6 ou 4 (jogada extra)
-    if (value === 6 || value === 4) {
-      createGoldenParticles(wrap);
+    // Se as animações estiverem LIGADAS, faz o "bounce" e as "partículas"
+    if (state.config.animations !== false) {
+      // BOUNCE
+      sticks.classList.add('dice-bounce');
+      setTimeout(() => sticks.classList.remove('dice-bounce'), 600);
+      
+      // PARTÍCULAS 
+      if (value === 6 || value === 4 || value === 1) {
+        createGoldenParticles(wrap);
+      }
     }
- };
+  };
 
   function setDiceVisual(val){
-    // 0 claras = 6, 1=1, 2=2, 3=3, 4=4
     const lightFaces = (val===6?0:val);
     arr.forEach((s,idx)=>{
       const light = idx < lightFaces;

@@ -1,4 +1,4 @@
-// Modal.js - Sistema de modais premium com overlay blur
+import { state } from '../core/state.js';
 
 let activeModal = null;
 let activeEscHandler = null;
@@ -81,8 +81,6 @@ export function showModal({ title, content, buttons = [], onClose, className = '
     }
   };
   
-  // Fechar com ESC
-
   // Limpa qualquer ouvinte anterior que possa ter ficado preso
   if (activeEscHandler) {
     document.removeEventListener('keydown', activeEscHandler);
@@ -98,9 +96,8 @@ export function showModal({ title, content, buttons = [], onClose, className = '
   document.addEventListener('keydown', activeEscHandler);
 }
 
-/**
- * Fecha o modal ativo
- */
+/*Fecha o modal ativo */
+
 export function closeModal() {
   if (!activeModal) return;
 
@@ -121,9 +118,7 @@ export function closeModal() {
   activeModal = null;
 }
 
-/**
- * Modal de Regras do Jogo
- */
+/*Modal de Regras do Jogo*/
 export function showRulesModal() {
   showModal({
     title: 'Regras do Tâb',
@@ -191,15 +186,13 @@ export function showRulesModal() {
   });
 }
 
-/**
- * Modal de Vitória com confetti
- */
+/* Modal de Vitória com confetti*/
 export function showVictoryModal({ winner, stats = {}, onPlayAgain, onGoToMenu }) {
   const winnerName = winner === 1 ? 'Você' : 'IA';
   const isPlayerWin = winner === 1;
   
   // Só cria confetti se o jogador vencer
-  if (isPlayerWin) {
+  if (isPlayerWin && state.config.animations !== false) {
     createConfetti(150);
   }
   
@@ -250,9 +243,7 @@ export function showVictoryModal({ winner, stats = {}, onPlayAgain, onGoToMenu }
   setTimeout(() => animateStats(), 300);
 }
 
-/**
- *  Anima números das estatísticas
- */
+/*Anima números das estatísticas*/
 function animateStats() {
   const statElements = document.querySelectorAll('.animated-stat');
   statElements.forEach((el, index) => {
@@ -276,9 +267,7 @@ function animateStats() {
   });
 }
 
-/**
- *  Cria animação de confetti dourado (MELHORADO)
- */
+/*Cria animação de confetti dourado*/
 function createConfetti(count = 150) {
   const colors = ['#CBB279', '#C17F59', '#D4AF37', '#F8F5E1', '#A35F3B'];
   
@@ -298,9 +287,7 @@ function createConfetti(count = 150) {
   }
 }
 
-/**
- * Modal de Leaderboard
- */
+/* Modal de Leaderboard*/
 export function showLeaderboardModal() {
   const stats = getPlayerStats();
   
@@ -365,9 +352,7 @@ export function showLeaderboardModal() {
   });
 }
 
-/**
- * Obtém estatísticas do jogador do localStorage
- */
+/*Obtém estatísticas do jogador do localStorage*/
 function getPlayerStats() {
   const username = localStorage.getItem('tab_username') || null;
   const gamesData = JSON.parse(localStorage.getItem('tab_games') || '[]');
@@ -392,9 +377,7 @@ function getPlayerStats() {
   };
 }
 
-/**
- * Salva resultado de jogo no localStorage
- */
+/* Salva resultado de jogo no localStorage*/
 export function saveGameResult({ won, captures, moves }) {
   const username = localStorage.getItem('tab_username') || 'Anônimo';
   const gamesData = JSON.parse(localStorage.getItem('tab_games') || '[]');

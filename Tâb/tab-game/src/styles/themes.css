@@ -1,10 +1,10 @@
-/* ========== TEMA ÁRABE - PREMIUM DESIGN ========== */
+/*TEMA ÁRABE */
 
 /* Reset básico */
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
 html,body{ height:100%; }
 
-/* ========== PERFORMANCE OPTIMIZATION ========== */
+/* PERFORMANCE OPTIMIZATION */
 /* CSS Containment: isola recálculos de layout */
 .board-grid {
   contain: layout style paint;
@@ -18,7 +18,7 @@ html,body{ height:100%; }
   contain: layout style;
 }
 
-/* ========== ACESSIBILIDADE: FOCUS VISÍVEL ========== */
+/* ACESSIBILIDADE: FOCUS VISÍVEL */
 /* Remove outline padrão do browser */
 *:focus { outline: none; }
 
@@ -60,6 +60,10 @@ body{
   background:var(--ink);
   overflow:hidden;
   position:relative;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;     /* IE/Edge */
+  user-select: none;
 }
 
 /* Padrão árabe de fundo com parallax suave */
@@ -82,7 +86,7 @@ body::before{
   50%{ transform:translate(-10px,-10px); }
 }
 
-/* ========== APP CONTAINER ========== */
+/* APP CONTAINER */
 #app{
   position:relative;
   height:100vh;
@@ -92,13 +96,19 @@ body::before{
 }
 
 /* Transições de páginas */
-.view{ width:100%; height:100%; }
+.view{ 
+  width:100%; 
+  height:100%; 
+  /* Centra o .menu-shell no meio do ecrã */
+  display: grid;
+  place-items: center;
+}
 .page-enter{ animation:fadeIn var(--transition-fast) ease forwards; }
 .page-leave{ animation:fadeOut var(--transition-fast) ease forwards; }
 @keyframes fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
 @keyframes fadeOut{ to{opacity:0;transform:translateY(8px)} }
 
-/* ========== GLASS CARDS (Efeito vidro) ========== */
+/* Efeito vidro*/
 .card{
   background:rgba(31,40,40,0.75);
   backdrop-filter:blur(12px);
@@ -113,7 +123,7 @@ body::before{
   border-color:rgba(203,178,121,0.1);
 }
 
-/* ========== BOTÕES ========== */
+/*BOTÕES */
 button{
   appearance:none;
   border:0;
@@ -185,7 +195,7 @@ button{
              0 0 15px rgba(203,178,121,0.2);
 }
 
-/* ========== LOGO ESTILIZADO ========== */
+/*LOGO ESTILIZADO*/
 .app-logo{
   font-family:var(--font-display);
   font-size:clamp(48px,7vw,80px);
@@ -205,7 +215,7 @@ button{
   50%{ transform:translateY(-12px); }
 }
 
-/* ========== MENU (LOBBY) ========== */
+/* MENU */
 .menu-shell{
   width:min(2000px,98vw);
   height:min(720px,88vh);
@@ -219,6 +229,7 @@ button{
   display:flex;
   flex-direction:column;
   gap:var(--space-lg);
+  height: 100%;
 }
 
 .logo-bloc{
@@ -227,6 +238,7 @@ button{
   justify-content:center;
   height:160px;
   position:relative;
+  margin-top: -40px;
 }
 
 .hero-card{
@@ -237,6 +249,7 @@ button{
   gap:var(--space-xl);
   position:relative;
   overflow:hidden;
+  margin-top: 84px;
 }
 
 /* Brilho sutil no hero card */
@@ -296,7 +309,7 @@ button{
   opacity: 0.85;
 }
 
-/* ========== SETTINGS PANEL ========== */
+/* Painel de configurações  */
 .settings{
   padding:var(--space-lg);
   display:flex;
@@ -374,7 +387,7 @@ select:focus, .select:focus{
   background:rgba(203,178,121,0.7);
 }
 
-/* ========== LOGIN CARD ========== */
+/* LOGIN */
 .login-card{
   padding:var(--space-lg);
 }
@@ -410,6 +423,10 @@ select:focus, .select:focus{
   font-family:inherit;
   font-size:1rem;
   transition:all var(--transition-fast);
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
 }
 
 .input-field::placeholder{
@@ -458,7 +475,7 @@ select:focus, .select:focus{
   font-size:0.9rem;
 }
 
-/* ========== BOTÃO HERO ========== */
+/* BOTÃO HERO*/
 .btn-hero{
   font-size:1.2rem !important;
   padding:var(--space-lg) var(--space-xl) !important;
@@ -489,7 +506,7 @@ select:focus, .select:focus{
   transform:scale(1.05);
 }
 
-/* ========== GAME HUD ========== */
+/* GAME HUD */
 .game-scene{
   width:100%;
   height:100vh;
@@ -524,7 +541,7 @@ select:focus, .select:focus{
           drop-shadow(0 0 12px rgba(212, 175, 55, 0.6));
 }
 
-/*  Novo layout do HUD com indicadores CENTRADOS */
+/* HUD com indicadores CENTRADOS */
 .turn-display {
   display: flex;
   align-items: center;
@@ -621,7 +638,7 @@ select:focus, .select:focus{
   letter-spacing:0.5px;
 }
 
-/*  Botões com ícones SVG minimalistas */
+/*  Botões com ícones SVG  */
 .game-scene .actions{
   display:flex;
   gap:var(--space-md);
@@ -671,7 +688,7 @@ select:focus, .select:focus{
   stroke: var(--red);
 }
 
-/* ========== STAGE & LAYOUT ========== */
+/*  STAGE & LAYOUT  */
 .stage{
   display:grid;
   grid-template-columns:1fr auto;
@@ -694,7 +711,7 @@ select:focus, .select:focus{
   padding:var(--space-md);
 }
 
-/* ========== TOASTS ========== */
+/*  TOASTS  */
 .toast-box{
   position:fixed;
   right:var(--space-lg);
@@ -747,7 +764,7 @@ select:focus, .select:focus{
   75%{ transform:translateX(8px); }
 }
 
-/* ========== DICE (Sticks) ========== */
+/* DADO */
 .dice{
   display:flex;
   flex-direction:column;
@@ -759,7 +776,7 @@ select:focus, .select:focus{
   border:1px solid rgba(203,178,121,0.2);
   backdrop-filter:blur(10px);
   -webkit-backdrop-filter:blur(10px);
-  /*  PERFORMANCE: GPU acceleration para animações */
+  /* GPU acceleration para animações */
   will-change: transform, opacity;
 }
 
@@ -781,7 +798,7 @@ select:focus, .select:focus{
   position:relative;
   transform-style:preserve-3d;
   transition:transform 0.6s ease-out;
-  /*  PERFORMANCE: GPU acceleration */
+  /* GPU acceleration */
   will-change: transform;
 }
 
@@ -875,7 +892,7 @@ select:focus, .select:focus{
   }
 }
 
-/* ========== BOARD (Tabuleiro) ========== */
+/*Tabuleiro */
 .board-wrap{
   padding:28px;
   background:
@@ -892,7 +909,7 @@ select:focus, .select:focus{
   overflow:visible;
 }
 
-/* Padrão geométrico árabe na borda */
+/* Padrão geométrico  na borda */
 .board-wrap::before{
   content:'';
   position:absolute;
@@ -911,7 +928,7 @@ select:focus, .select:focus{
     0 0 20px rgba(212,175,55,0.1);
 }
 
-/* Cantos decorativos árabes */
+/* Cantos decorativos  */
 .board-wrap::after{
   content:'';
   position:absolute;
@@ -1063,7 +1080,7 @@ select:focus, .select:focus{
   }
 }
 
-/* ========== PEÇAS - PREMIUM ÁRABE ========== */
+/*  PEÇAS */
 .piece{
   width:58px;
   height:58px;
@@ -1077,11 +1094,11 @@ select:focus, .select:focus{
   pointer-events:none;
   position:relative;
   transition:transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  /* ⚡ PERFORMANCE: GPU acceleration para movimento das peças */
+  /* GPU acceleration para movimento das peças */
   will-change: transform;
 }
 
-/* Delineado dourado árabe */
+/* Delineado dourado */
 .piece::before{
   content:'';
   position:absolute;
@@ -1149,7 +1166,7 @@ select:focus, .select:focus{
   to{ outline-offset:3px; }
 }
 
-/* ========== ANIMAÇÕES FASE 3 ========== */
+/*  ANIMAÇÕES */
 
 /* Poeira de areia na captura */
 .sand-particle{
@@ -1229,8 +1246,7 @@ select:focus, .select:focus{
   }
 }
 
-/* Shake do tabuleiro em erro */
-/*  Shake mais dramático do tabuleiro */
+/* Shake do tabuleiro */
 .board-shake{
   animation:shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97);
 }
@@ -1339,7 +1355,7 @@ select:focus, .select:focus{
   to{ opacity:1; transform:scale(1) translateY(0); }
 }
 
-/* ========== PAINEL DIREITO ========== */
+/*  PAINEL DIREITO  */
 .right-pane{
   display:flex;
   flex-direction:column;
@@ -1357,7 +1373,7 @@ select:focus, .select:focus{
   backdrop-filter:blur(10px);
 }
 
-/* ========== MODAIS ========== */
+/*  MODAIS  */
 .modal-overlay{
   position:fixed;
   inset:0;
@@ -1370,7 +1386,7 @@ select:focus, .select:focus{
   opacity:0;
   transition:opacity 0.3s ease;
   padding:var(--space-lg);
-  /*  PERFORMANCE: GPU acceleration para fade in/out */
+  /*  GPU acceleration para fade in/out */
   will-change: opacity;
 }
 
@@ -1396,7 +1412,7 @@ select:focus, .select:focus{
   transform:scale(0.9);
   opacity:0;
   transition:transform 0.3s ease, opacity 0.3s ease;
-  /*  PERFORMANCE: GPU acceleration */
+  /* GPU acceleration */
   will-change: transform, opacity;
 }
 
@@ -1597,7 +1613,6 @@ select:focus, .select:focus{
 .stat-value{
   font-size:2rem;
   font-weight:700;
-  color:var(--amber);
   transition: all 0.3s ease;
 }
 
@@ -1608,7 +1623,7 @@ select:focus, .select:focus{
 
 @keyframes statPop {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); color: var(--accent-gold); }
+  50% { transform: scale(1.2); }
 }
 
 .result-tip{
@@ -1620,15 +1635,18 @@ select:focus, .select:focus{
   font-size:0.95rem;
 }
 
-.modal-victory .result-message{
+.modal-victory .result-message,
+.modal-victory .stat-value {
   color:var(--turquoise);
 }
 
-.modal-defeat .result-message{
+/* Cor de Derrota para Mensagem E Números */
+.modal-defeat .result-message,
+.modal-defeat .stat-value {
   color:var(--amber);
 }
 
-/*  Confetti melhorado (mais peças) */
+/*  Confetti  */
 .confetti-piece{
   position:fixed;
   width:10px;
@@ -1730,7 +1748,7 @@ select:focus, .select:focus{
   font-style:italic;
 }
 
-/* ========== LÓGICA DO BOTÃO DE SOM (ADICIONADO) ========== */
+/* LÓGICA DO BOTÃO DE SOM */
 
 /* Por defeito, esconde o ícone "Mute" (som desligado) */
 .icon-sound-off {
@@ -1757,7 +1775,7 @@ select:focus, .select:focus{
 }
 
 
-/* ========== AUDIO POPOVER (Mini-Menu) ========== */
+/* AUDIO POP OVER  */
 .audio-popover {
   position: fixed;
   background: rgba(31, 40, 40, 0.95);
@@ -1792,7 +1810,7 @@ select:focus, .select:focus{
   font-weight: 600;
 }
 
-/* ========== SHORTCUTS POPOVER ========== */
+/*  SHORTCUTS POP OVER  */
 .shortcuts-popover {
   position: fixed;
   background: rgba(31, 40, 40, 0.95);
@@ -1826,7 +1844,7 @@ select:focus, .select:focus{
   opacity: 0.9;
 }
 
-/* --- Toggle Switch (Botão Mute) --- */
+/*Botão Mute*/
 .toggle-switch {
   width: 44px;
   height: 24px;
@@ -1860,7 +1878,7 @@ select:focus, .select:focus{
   background: var(--ink);
 }
 
-/* --- Volume Slider (Range Input) --- */
+/* Volume Slider */
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -1873,7 +1891,7 @@ input[type="range"] {
   cursor: pointer;
 }
 
-/* Slider Thumb (a bola) */
+/* Slider Thumb  */
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -1898,7 +1916,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   transform: scale(1.1);
 }
 
-/* ========== CONFIG VIEW ========== */
+/*CONFIG VIEW */
 .config-shell {
   width: min(900px, 95vw);
   max-height: 90vh;
@@ -2121,7 +2139,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   }
 }
 
-/* ========== SELETOR DE TEMAS ========== */
+/*  SELETOR DE TEMAS  */
 .theme-selector {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -2171,6 +2189,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   justify-content: center;
   font-weight: bold;
   font-size: 14px;
+  z-index: 2;
 }
 
 .theme-preview {
@@ -2180,6 +2199,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   position: relative;
   overflow: hidden;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1;
 }
 
 .theme-preview::before,
@@ -2189,7 +2209,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   border-radius: 50%;
 }
 
-/* Preview Deserto (padrão atual) */
+/* Preview Deserto */
 .theme-preview-desert {
   background: linear-gradient(135deg, #CBB279 0%, #C17F59 50%, #A35F3B 100%);
 }
@@ -2291,9 +2311,9 @@ input[type="range"]:hover::-webkit-slider-thumb {
   letter-spacing: 0.5px;
 }
 
-/* ========== TEMAS DE CORES ========== */
+/*  TEMAS DE CORES  */
 
-/* ========== TEMA: DESERT NIGHT (Noite no Deserto) ========== */
+/*  TEMA: Noite no Deserto  */
 body[data-theme="desert-night"] {
   --sand: #a8b8d8;
   --amber: #d4a574;
@@ -2344,14 +2364,7 @@ body[data-theme="desert-night"]::before {
   animation: parallaxFloat 40s ease-in-out infinite;
 }
 
-/* Unifica cor dos cards no tema Desert Night */
-body[data-theme="desert-night"] .card,
-body[data-theme="desert-night"] .card--soft {
-  background: rgba(31, 40, 40, 0.75) !important;
-  border-color: rgba(203, 178, 121, 0.15);
-}
-
-/* ========== TEMA: HALLOWEEN (Assustador) ========== */
+/*  TEMA: Halloween  */
 body[data-theme="halloween"] {
   --sand: #b19cd9;
   --amber: #9370db;
@@ -2402,56 +2415,43 @@ body[data-theme="halloween"]::before {
   animation: parallaxFloat 50s ease-in-out infinite;
 }
 
-/* Unifica cor dos cards no tema Halloween */
-body[data-theme="halloween"] .card,
-body[data-theme="halloween"] .card--soft {
-  background: rgba(31, 40, 40, 0.75) !important;
-  border-color: rgba(203, 178, 121, 0.15);
-}
-
 @keyframes simpleFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
-/* MODIFICADO: Lua atrás do logo no tema Halloween */
 body[data-theme="halloween"] .logo-bloc::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
-  /* Isto centra a lua e não é substituído pela animação */
+  /*  centra a lua  */
   transform: translate(-50%, -50%); 
 
   background-image: url('../assets/patterns/lua.png');
   background-size: contain;
   background-repeat: no-repeat;
 
-  /* 1. MAIOR (era 140px) */
   width: 240px; 
   height: 240px;
 
-  /* Luz branca (mantida) */
+  /* Luz branca */
   filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
 
   z-index: -1;
 
-  /* 2. MAIS OPACA (era 0.75) */
-  opacity: 0.9; /* Opacidade final */
+  opacity: 0.9; 
 
-  /* 3. BUG CORRIGIDO (animação) */
-  /* Usamos a nova animação "simpleFadeIn" que só mexe na opacidade */
   animation: simpleFadeIn 0.8s ease;
 }
 
 body[data-theme="halloween"] .app-logo {
-  /* Escurece o gradiente (brightness) 
-    e ajusta a cor do brilho (drop-shadow) para o roxo do Halloween.
+  /* Escurece o gradiente e ajusta a cor do brilho para o roxo.
   */
   filter: brightness(0.7) drop-shadow(0 8px 32px rgba(147, 112, 219, 0.4));
 }
 
-/* ========== TEMA: CHRISTMAS (Natal) ========== */
+/* TEMA: Natal*/
 body[data-theme="christmas"] {
   --sand: #ffcccc;
   --amber: #ffd700;
@@ -2468,7 +2468,7 @@ body[data-theme="christmas"] {
   --text-secondary: #ffcccc;
   --border-primary: #ffd700;
   --accent-gold: #ffd700;
-  
+
   background-color: #8b0000; /* Fundo vermelho */
 }
 
@@ -2499,7 +2499,7 @@ body[data-theme="christmas"] .active-player .player-icon-blue {
 }
 
 
-/* ========== BOTÕES DE NATAL ========== */
+/*  BOTÕES DE NATAL  */
 
 /* Botão Primário (DOURADO) */
 body[data-theme="christmas"] .btn-primary {
@@ -2645,7 +2645,7 @@ body[data-theme="christmas"] label {
   color: #ffd700 !important;
 }
 
-/* ========== ESTILOS DE PEÇAS ========== */
+/*  ESTILOS DE PEÇAS  */
 
 /* Estilo Clássico - Cores sólidas */
 body[data-pieceStyle="classic"] .piece-yellow {
@@ -2673,4 +2673,16 @@ body[data-pieceStyle="minimal"] .piece-blue {
 
 body[data-pieceStyle="minimal"] .piece {
   border-radius: 4px;
+}
+
+/* Desliga animações específicas de temas */
+
+/* Desliga o "float" do logo principal */
+.no-animations .app-logo {
+  animation: none;
+}
+
+/* Desliga o scroll do botão "candy cane" do Natal */
+body[data-theme="christmas"].no-animations .btn-primary {
+  animation: none;
 }
