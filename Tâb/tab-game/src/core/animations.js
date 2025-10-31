@@ -3,7 +3,7 @@
  * Gestão de efeitos visuais para cada tema
  * AGORA: Pai Natal à frente e da direita para a esquerda. Resto da neve e luzes atrás.
  */
-
+import { state } from './state.js';
 // --- ALTERADO: Duas camadas de canvas ---
 let canvasBg = null; // Canvas de Fundo (atrás do jogo)
 let ctxBg = null;
@@ -149,17 +149,25 @@ function animateBackground() {
   ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
   
   particlesBg.forEach(particle => {
-    particle.update();
-    particle.draw(ctxBg); // Todas as partículas de fundo usam ctxBg
+    // --- MODIFICADO ---
+    if (state.config.animations !== false) {
+      particle.update(); // Só atualiza se animações ligadas
+    }
+    // --- FIM ---
+    particle.draw(ctxBg); 
   });
   
   if (currentTheme === 'halloween' && lightning) {
-    lightningTimer++;
-    if (lightningTimer > 400 && Math.random() < 0.008) {
-      lightning.trigger();
-      lightningTimer = 0;
+    // --- MODIFICADO ---
+    if (state.config.animations !== false) {
+      lightningTimer++;
+      if (lightningTimer > 400 && Math.random() < 0.008) {
+        lightning.trigger();
+        lightningTimer = 0;
+      }
+      lightning.update();
     }
-    lightning.update();
+    // --- FIM ---
     lightning.draw(ctxBg);
   }
 
@@ -191,10 +199,14 @@ function animateForeground() {
   ctxFg.clearRect(0, 0, canvasFg.width, canvasFg.height);
   
   particlesFg.forEach(particle => {
-    particle.update();
-    particle.draw(ctxFg); // O Pai Natal usa ctxFg
+    // --- MODIFICADO ---
+    if (state.config.animations !== false) {
+      particle.update(); // Só atualiza se animações ligadas
+    }
+    // --- FIM ---
+    particle.draw(ctxFg); 
   });
-  
+
   animationFrameFg = requestAnimationFrame(animateForeground);
 }
 
@@ -261,6 +273,7 @@ class ShootingStar {
   }
   
   draw(ctx) { // Recebe o contexto (será ctxBg)
+    if (state.config.animations === false) return;
     if (this.opacity <= 0) return;
     
     const tailX = this.x - this.vx * 10;
@@ -466,9 +479,12 @@ class Pumpkin {
   }
 
   update() {
-    this.glowPhase += this.glowSpeed;
+    // --- MODIFICADO ---
+    if (state.config.animations !== false) {
+      this.glowPhase += this.glowSpeed;
+    }
+    // --- FIM ---
   }
-
   draw(ctx) {
     // 'ctx.canvas' é o 'canvasFg', que tem o tamanho da JANELA
 
@@ -762,7 +778,11 @@ class ChristmasLight {
   }
   
   update() {
-    this.glowPhase += this.glowSpeed;
+    // --- MODIFICADO ---
+    if (state.config.animations !== false) {
+      this.glowPhase += this.glowSpeed;
+    }
+    // --- FIM ---
   }
   
   draw(ctx) { // Recebe o contexto (será ctxBg)

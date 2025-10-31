@@ -1,4 +1,5 @@
 // Modal.js - Sistema de modais premium com overlay blur
+import { state } from '../core/state.js';
 
 let activeModal = null;
 let activeEscHandler = null;
@@ -199,7 +200,7 @@ export function showVictoryModal({ winner, stats = {}, onPlayAgain, onGoToMenu }
   const isPlayerWin = winner === 1;
   
   // Só cria confetti se o jogador vencer
-  if (isPlayerWin) {
+  if (isPlayerWin && state.config.animations !== false) {
     createConfetti(150);
   }
   

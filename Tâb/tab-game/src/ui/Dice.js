@@ -1,5 +1,6 @@
 // src/ui/Dice.js - VERSÃO COM MICRO-ANIMAÇÕES E SOM
 import { playSound } from '../core/audio.js'; // <-- IMPORTA O playSound
+import { state } from '../core/state.js';
 
 export function Dice(onRoll){
   const wrap = document.createElement('div');
@@ -39,9 +40,11 @@ export function Dice(onRoll){
     btn.classList.add('is-disabled'); 
     btn.style.opacity = '0.6';
 
+    if (state.config.animations !== false) {
     arr.forEach(s => s.classList.add('shuffling'));
     await new Promise(r=>setTimeout(r,800));
     arr.forEach(s => s.classList.remove('shuffling'));
+  }
     const value = await onRoll?.();
     setDiceVisual(value);
     
@@ -50,7 +53,7 @@ export function Dice(onRoll){
     setTimeout(() => sticks.classList.remove('dice-bounce'), 600);
     
     //  PARTÍCULAS DOURADAS para 6 ou 4 (jogada extra)
-    if (value === 6 || value === 4) {
+    if ((value === 6 || value === 4 || value ===1) && state.config.animations !== false) {
       createGoldenParticles(wrap);
     }
  };
