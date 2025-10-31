@@ -815,10 +815,10 @@ class SantaSleigh {
   }
   
   reset() {
-    // --- ALTERADO: Começa fora da tela à DIREITA e se move para ESQUERDA ---
-    this.x = canvasFg.width + 300; // Começa à direita
+    // Começa fora da tela à ESQUERDA e move-se para a DIREITA
+    this.x = -300; // Começa à esquerda
     this.y = Math.random() * (canvasFg.height * 0.4) + 80; // Usa canvasFg
-    this.speed = -(3 + Math.random() * 2); // Velocidade NEGATIVA para ir para a esquerda
+    this.speed = 3 + Math.random() * 2; // Velocidade POSITIVA para ir para a direita
     this.wavePhase = 0;
     this.waveSpeed = 0.05;
     this.scale = 0.8 + Math.random() * 0.4;
@@ -836,8 +836,8 @@ class SantaSleigh {
     
     this.y += Math.sin(this.wavePhase) * 0.5;
     
-    // --- ALTERADO: Reset quando sair completamente pela ESQUERDA ---
-    if (this.x < -300) {
+    // Reset quando sair completamente pela DIREITA
+    if (this.x > canvasFg.width + 300) {
       this.reset();
     }
   }
@@ -848,15 +848,11 @@ class SantaSleigh {
     ctx.scale(this.scale, this.scale);
     ctx.globalAlpha = 0.9;
     
-    // --- ADICIONADO: Espelha horizontalmente para a rena e o Pai Natal olharem para a esquerda ---
-    ctx.scale(-1, 1); 
-    // Após espelhar, tudo o que é desenhado à direita do centro (0,0) aparecerá à esquerda
-    // e vice-versa. Ajustamos as coordenadas dentro das funções de desenho.
+    // SEM espelhamento - renas e Pai Natal olham para a direita naturalmente
     
     // Renas (3 renas)
     for (let i = 0; i < 3; i++) {
-      // Offset de X inverte-se por causa do espelhamento, mas a lógica permanece a mesma
-      const offsetX = i * -60; // Mantém a distância entre elas
+      const offsetX = i * 60; // Distância entre renas
       const jumpPhase = this.wavePhase + i * 0.5;
       const jumpY = Math.sin(jumpPhase * 2) * 8;
       
@@ -864,7 +860,7 @@ class SantaSleigh {
     }
     
     // Trenó
-    this.drawSleigh(ctx, -40, 0); // Passa o contexto
+    this.drawSleigh(ctx, 40, 0); // Passa o contexto
     
     // Pai Natal
     this.drawSanta(ctx, 0, -10); // Passa o contexto
@@ -883,36 +879,36 @@ class SantaSleigh {
     ctx.ellipse(0, 0, 20, 12, 0, 0, Math.PI * 2);
     ctx.fill();
     
-    // Cabeça
+    // Cabeça (agora virada para a DIREITA)
     ctx.beginPath();
-    ctx.ellipse(-18, -8, 10, 8, -0.3, 0, Math.PI * 2);
+    ctx.ellipse(18, -8, 10, 8, 0.3, 0, Math.PI * 2);
     ctx.fill();
     
-    // Chifres
+    // Chifres (espelhados para a direita)
     ctx.strokeStyle = '#654321';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(-20, -14);
-    ctx.lineTo(-22, -20);
-    ctx.lineTo(-19, -18);
-    ctx.moveTo(-20, -14);
-    ctx.lineTo(-17, -19);
+    ctx.moveTo(20, -14);
+    ctx.lineTo(22, -20);
+    ctx.lineTo(19, -18);
+    ctx.moveTo(20, -14);
+    ctx.lineTo(17, -19);
     ctx.stroke();
     
     ctx.beginPath();
-    ctx.moveTo(-16, -14);
-    ctx.lineTo(-14, -20);
-    ctx.lineTo(-17, -18);
-    ctx.moveTo(-16, -14);
-    ctx.lineTo(-13, -19);
+    ctx.moveTo(16, -14);
+    ctx.lineTo(14, -20);
+    ctx.lineTo(17, -18);
+    ctx.moveTo(16, -14);
+    ctx.lineTo(13, -19);
     ctx.stroke();
     
-    // Nariz vermelho (Rudolph!)
+    // Nariz vermelho (Rudolph!) - agora à direita
     ctx.fillStyle = '#ff0000';
     ctx.shadowBlur = 8;
     ctx.shadowColor = '#ff0000';
     ctx.beginPath();
-    ctx.arc(-25, -8, 3, 0, Math.PI * 2);
+    ctx.arc(25, -8, 3, 0, Math.PI * 2);
     ctx.fill();
     ctx.shadowBlur = 0;
     
@@ -926,12 +922,12 @@ class SantaSleigh {
     ctx.lineTo(8, 20);
     ctx.stroke();
     
-    // Cauda
+    // Cauda (agora à esquerda)
     ctx.strokeStyle = '#654321';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(18, -2);
-    ctx.lineTo(25, -5);
+    ctx.moveTo(-18, -2);
+    ctx.lineTo(-25, -5);
     ctx.stroke();
     
     ctx.restore();
@@ -1052,6 +1048,298 @@ class SantaSleigh {
   }
 }
 
+// --- 3.5. Grinch a Caminhar (FG) ---
+class GrinchWalking {
+  constructor() {
+    this.reset();
+  }
+  
+  reset() {
+    // Começa à direita e vai para a esquerda (a fugir!)
+    this.x = canvasFg.width + 200;
+    this.y = canvasFg.height - 100; // Caminha no chão
+    this.speed = -2.5; // Mais lento que o Pai Natal (a carregar o saco!)
+    this.walkPhase = 0;
+    this.walkSpeed = 0.15; // Velocidade da animação de caminhada
+    this.scale = 1.2; // Um pouco maior
+  }
+  
+  update() {
+    this.x += this.speed;
+    this.walkPhase += this.walkSpeed;
+    
+    // Efeito de subir/descer ao caminhar
+    this.bobY = Math.sin(this.walkPhase * 2) * 3;
+    
+    // Reset quando sair pela esquerda
+    if (this.x < -250) {
+      this.reset();
+    }
+  }
+  
+  draw(ctx) {
+    ctx.save();
+    ctx.translate(this.x, this.y + this.bobY);
+    ctx.scale(this.scale, this.scale);
+    ctx.globalAlpha = 0.95;
+    
+    // Espelha para olhar para a esquerda
+    ctx.scale(-1, 1);
+    
+    // Saco de prendas nas costas
+    this.drawSack(ctx, -25, -40);
+    
+    // Corpo do Grinch
+    this.drawBody(ctx);
+    
+    // Cabeça
+    this.drawHead(ctx);
+    
+    // Pernas (animadas)
+    this.drawLegs(ctx);
+    
+    // Braço segurando o saco
+    this.drawArm(ctx);
+    
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+  
+  drawSack(ctx, x, y) {
+    ctx.save();
+    ctx.translate(x, y);
+    
+    // Saco castanho grande
+    ctx.fillStyle = '#8B4513';
+    ctx.strokeStyle = '#654321';
+    ctx.lineWidth = 2;
+    
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 20, 28, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Amarração do saco (corda)
+    ctx.strokeStyle = '#D2691E';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-15, -20);
+    ctx.lineTo(15, -20);
+    ctx.stroke();
+    
+    // Nó da corda
+    ctx.fillStyle = '#D2691E';
+    ctx.beginPath();
+    ctx.arc(0, -20, 4, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Textura do saco (alguns patches/remendos)
+    ctx.fillStyle = '#A0522D';
+    ctx.globalAlpha = 0.4;
+    ctx.beginPath();
+    ctx.ellipse(-8, 5, 6, 8, 0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(7, -5, 5, 7, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    
+    ctx.restore();
+  }
+  
+  drawBody(ctx) {
+    // Corpo verde (magro e peludo)
+    ctx.fillStyle = '#6B8E23'; // Verde do Grinch
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 18, 25, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Roupa vermelha rasgada (túnica)
+    ctx.fillStyle = '#8B0000';
+    ctx.beginPath();
+    ctx.moveTo(-15, -5);
+    ctx.lineTo(15, -5);
+    ctx.lineTo(18, 20);
+    ctx.lineTo(-18, 20);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Rasgões na roupa
+    ctx.strokeStyle = '#4B0000';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-10, 5);
+    ctx.lineTo(-7, 10);
+    ctx.lineTo(-10, 15);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(8, 0);
+    ctx.lineTo(11, 8);
+    ctx.stroke();
+    
+    // Cinto (corda velha)
+    ctx.strokeStyle = '#654321';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-18, 8);
+    ctx.lineTo(18, 8);
+    ctx.stroke();
+  }
+  
+  drawHead(ctx) {
+    ctx.save();
+    ctx.translate(0, -30);
+    
+    // Cabeça verde
+    ctx.fillStyle = '#6B8E23';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 14, 16, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Olhos amarelos malvados
+    ctx.fillStyle = '#FFFF00';
+    ctx.beginPath();
+    ctx.ellipse(-5, -3, 4, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(5, -3, 4, 5, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Pupilas pequenas e malvadas
+    ctx.fillStyle = '#000000';
+    ctx.beginPath();
+    ctx.arc(-5, -2, 2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(5, -2, 2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Sobrancelhas malvadas
+    ctx.strokeStyle = '#4B5F20';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-9, -7);
+    ctx.lineTo(-3, -5);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(9, -7);
+    ctx.lineTo(3, -5);
+    ctx.stroke();
+    
+    // Sorriso malvado largo
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, 3, 10, 0.1, Math.PI - 0.1);
+    ctx.stroke();
+    
+    // Dentes pontiagudos
+    ctx.fillStyle = '#FFFFFF';
+    for (let i = -8; i <= 8; i += 4) {
+      ctx.beginPath();
+      ctx.moveTo(i, 8);
+      ctx.lineTo(i - 2, 12);
+      ctx.lineTo(i + 2, 12);
+      ctx.closePath();
+      ctx.fill();
+    }
+    
+    // Nariz pequeno
+    ctx.fillStyle = '#556B2F';
+    ctx.beginPath();
+    ctx.ellipse(0, 1, 3, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Gorro de Pai Natal roubado (torto)
+    ctx.fillStyle = '#cc0000';
+    ctx.save();
+    ctx.rotate(-0.3); // Torto
+    ctx.beginPath();
+    ctx.moveTo(-10, -12);
+    ctx.lineTo(10, -12);
+    ctx.lineTo(12, -24);
+    ctx.lineTo(-8, -24);
+    ctx.closePath();
+    ctx.fill();
+    
+    // Pompom
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.arc(10, -26, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    
+    ctx.restore();
+  }
+  
+  drawLegs(ctx) {
+    // Animação de caminhada - pernas alternadas
+    const leftLegAngle = Math.sin(this.walkPhase) * 0.4;
+    const rightLegAngle = Math.sin(this.walkPhase + Math.PI) * 0.4;
+    
+    ctx.save();
+    
+    // Perna esquerda
+    ctx.save();
+    ctx.translate(-8, 22);
+    ctx.rotate(leftLegAngle);
+    ctx.fillStyle = '#6B8E23';
+    ctx.fillRect(-4, 0, 8, 25);
+    // Pé
+    ctx.fillStyle = '#4B5F20';
+    ctx.beginPath();
+    ctx.ellipse(0, 25, 6, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    
+    // Perna direita
+    ctx.save();
+    ctx.translate(8, 22);
+    ctx.rotate(rightLegAngle);
+    ctx.fillStyle = '#6B8E23';
+    ctx.fillRect(-4, 0, 8, 25);
+    // Pé
+    ctx.fillStyle = '#4B5F20';
+    ctx.beginPath();
+    ctx.ellipse(0, 25, 6, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    
+    ctx.restore();
+  }
+  
+  drawArm(ctx) {
+    // Braço segurando o saco (atrás do corpo)
+    ctx.save();
+    ctx.translate(-18, -15);
+    ctx.rotate(-0.5);
+    
+    ctx.fillStyle = '#6B8E23';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 6, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Mão/garra
+    ctx.fillStyle = '#556B2F';
+    ctx.beginPath();
+    ctx.arc(-2, 18, 5, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Dedos/garras
+    ctx.strokeStyle = '#4B5F20';
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 3; i++) {
+      ctx.beginPath();
+      ctx.moveTo(-2 + (i - 1) * 3, 20);
+      ctx.lineTo(-2 + (i - 1) * 3, 25);
+      ctx.stroke();
+    }
+    
+    ctx.restore();
+  }
+}
+
 // --- 4. Neve Acumulada (BG) ---
 class SnowDrift {
   constructor() {
@@ -1122,9 +1410,16 @@ function initChristmas() {
   particlesFg.push(new SantaSleigh());
   
   const sleigh2 = new SantaSleigh();
-  sleigh2.x = canvasFg.width + 800; // Começa mais à direita, usa canvasFg
+  sleigh2.x = -800; // Começa mais à esquerda
   sleigh2.speed *= 1.2;
   particlesFg.push(sleigh2);
+  
+  // Grinch a caminhar -> FG (aparece de vez em quando)
+  if (Math.random() > 0.3) { // 70% de chance de aparecer
+    const grinch = new GrinchWalking();
+    grinch.x = canvasFg.width + Math.random() * 400; // Posição inicial aleatória
+    particlesFg.push(grinch);
+  }
   
   // Adiciona a neve acumulada -> BG
   particlesBg.push(new SnowDrift());

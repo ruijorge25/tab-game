@@ -2344,6 +2344,13 @@ body[data-theme="desert-night"]::before {
   animation: parallaxFloat 40s ease-in-out infinite;
 }
 
+/* Unifica cor dos cards no tema Desert Night */
+body[data-theme="desert-night"] .card,
+body[data-theme="desert-night"] .card--soft {
+  background: rgba(31, 40, 40, 0.75) !important;
+  border-color: rgba(203, 178, 121, 0.15);
+}
+
 /* ========== TEMA: HALLOWEEN (Assustador) ========== */
 body[data-theme="halloween"] {
   --sand: #b19cd9;
@@ -2395,6 +2402,13 @@ body[data-theme="halloween"]::before {
   animation: parallaxFloat 50s ease-in-out infinite;
 }
 
+/* Unifica cor dos cards no tema Halloween */
+body[data-theme="halloween"] .card,
+body[data-theme="halloween"] .card--soft {
+  background: rgba(31, 40, 40, 0.75) !important;
+  border-color: rgba(203, 178, 121, 0.15);
+}
+
 @keyframes simpleFadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -2438,27 +2452,24 @@ body[data-theme="halloween"] .app-logo {
 }
 
 /* ========== TEMA: CHRISTMAS (Natal) ========== */
-/* Bloco Novo (com fundo azul-noite) */
-/* Bloco Novo (com fundo azul-noite FORÇADO) */
 body[data-theme="christmas"] {
   --sand: #ffcccc;
-  --amber: #c41e3a;
+  --amber: #ffd700;
   --terracotta: #8b0000;
   --turquoise: #2e8b57;
-  --ink: #0b1a33;
-  --olive: #122b4f;
-  --cream: #fffaf0;
+  --ink: #8b0000;
+  --olive: #a01010;
+  --cream: #ffd700;
   --red: #c41e3a;
   --blue: #2e8b57;
-  --bg-primary: #0b1a33;
-  --bg-card: rgba(18, 43, 79, 0.92);
-  --text-primary: #fffaf0;
+  --bg-primary: #8b0000;
+  --bg-card: rgba(139, 0, 0, 0.92);
+  --text-primary: #ffd700;
   --text-secondary: #ffcccc;
-  --border-primary: #c41e3a;
+  --border-primary: #ffd700;
   --accent-gold: #ffd700;
   
-  /* ESTA É A LINHA IMPORTANTE: */
-  background-color: #0b1a33; /* <-- FORÇA O FUNDO AZUL-NOITE */
+  background-color: #8b0000; /* Fundo vermelho */
 }
 
 body[data-theme="christmas"] .piece-yellow {
@@ -2490,47 +2501,148 @@ body[data-theme="christmas"] .active-player .player-icon-blue {
 
 /* ========== BOTÕES DE NATAL ========== */
 
-/* Botão Primário (Tipo Bengala Doce) */
+/* Botão Primário (DOURADO) */
 body[data-theme="christmas"] .btn-primary {
-  color: var(--cream);
-  background: repeating-linear-gradient(
-    -45deg,
-    #c41e3a,
-    #c41e3a 10px,
-    #fffaf0 10px,
-    #fffaf0 20px
-  );
-  box-shadow: 0 8px 24px rgba(196, 30, 58, 0.4), 
-             inset 0 0 0 1px rgba(255,255,255,0.2);
+  color: #8b0000;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  box-shadow: 0 8px 24px rgba(255, 215, 0, 0.6), 
+             inset 0 2px 0 rgba(255,255,255,0.4),
+             0 0 20px rgba(255, 215, 0, 0.4);
   font-weight: 700;
-  border: 2px solid #fffaf0;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  animation: candyCaneScroll 10s linear infinite;
+  border: 2px solid #b8860b;
+  text-shadow: 0 1px 2px rgba(139, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
-@keyframes candyCaneScroll {
-  from { background-position: 0 0; }
-  to { background-position: 200px 0; }
+/* Brilho animado no botão dourado */
+body[data-theme="christmas"] .btn-primary::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: goldShine 3s infinite;
+}
+
+@keyframes goldShine {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 body[data-theme="christmas"] .btn-primary:hover {
-  filter: brightness(1.1);
-  box-shadow:0 12px 32px rgba(196, 30, 58, 0.6),
-             0 0 20px rgba(255, 215, 0, 0.5);
+  background: linear-gradient(135deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%);
+  box-shadow: 0 12px 32px rgba(255, 215, 0, 0.8),
+             0 0 30px rgba(255, 215, 0, 0.6);
   transform: translateY(-2px) scale(1.02);
+  border-color: #ffd700;
 }
 
-/* Botão Secundário (Verde Natalício) */
+/* Botão Secundário (Dourado) */
 body[data-theme="christmas"] .btn-secondary {
-  color: var(--cream);
-  background: rgba(46, 139, 87, 0.8); /* Verde musgo */
-  border: 1px solid rgba(255, 215, 0, 0.5); /* Borda dourada */
+  color: #8b0000;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #ffd700 100%);
+  border: 2px solid #b8860b;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5),
+             inset 0 2px 0 rgba(255,255,255,0.3);
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(139, 0, 0, 0.2);
 }
 
 body[data-theme="christmas"] .btn-secondary:hover {
-  background: rgba(46, 139, 87, 1);
-  border-color: var(--accent-gold);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+  background: linear-gradient(135deg, #ffed4e 0%, #ffd700 50%, #ffed4e 100%);
+  border-color: #ffd700;
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.7),
+             0 0 20px rgba(255, 215, 0, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Botão "Trocar Utilizador" dourado */
+body[data-theme="christmas"] .btn-change-user {
+  color: #8b0000 !important;
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%) !important;
+  border: 2px solid #b8860b !important;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5) !important;
+  font-weight: 600 !important;
+}
+
+body[data-theme="christmas"] .btn-change-user:hover {
+  background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%) !important;
+  border-color: #ffd700 !important;
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.7) !important;
+}
+
+/* Unifica cor de todos os cards no tema Natal */
+body[data-theme="christmas"] .card,
+body[data-theme="christmas"] .card--soft {
+  background: rgba(80, 20, 20, 0.95) !important;
+  border: 2px solid rgba(255, 215, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+             inset 0 1px 0 rgba(255, 215, 0, 0.1);
+}
+
+/* Títulos dourados */
+body[data-theme="christmas"] .panel-title,
+body[data-theme="christmas"] h2,
+body[data-theme="christmas"] h3 {
+  color: #ffd700 !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5),
+               0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+/* Selects e inputs - vermelho escuro com texto BRANCO */
+body[data-theme="christmas"] select,
+body[data-theme="christmas"] input,
+body[data-theme="christmas"] .config-select {
+  background: rgba(60, 15, 15, 0.8) !important;
+  color: #ffffff !important;
+  border: 2px solid rgba(255, 215, 0, 0.4) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body[data-theme="christmas"] select:hover,
+body[data-theme="christmas"] input:hover,
+body[data-theme="christmas"] .config-select:hover {
+  border-color: rgba(255, 215, 0, 0.6) !important;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.3),
+             inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+body[data-theme="christmas"] select:focus,
+body[data-theme="christmas"] input:focus {
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.5),
+             inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Opções de select BRANCAS */
+body[data-theme="christmas"] option {
+  background: #3c0f0f;
+  color: #ffffff;
+}
+
+/* Botões de atalho (R, Esc, Tab) - estilo discreto e elegante */
+body[data-theme="christmas"] .shortcut-key,
+body[data-theme="christmas"] .kbd {
+  background: rgba(60, 15, 15, 0.8) !important;
+  color: rgba(255, 215, 0, 0.9) !important;
+  border: 1px solid rgba(255, 215, 0, 0.3) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3),
+             inset 0 1px 0 rgba(255, 215, 0, 0.1);
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
+/* Labels dourados suaves */
+body[data-theme="christmas"] label {
+  color: #ffd700 !important;
 }
 
 /* ========== ESTILOS DE PEÇAS ========== */

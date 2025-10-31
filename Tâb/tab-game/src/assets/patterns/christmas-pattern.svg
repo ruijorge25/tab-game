@@ -1,17 +1,17 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
   <defs>
-    <!-- Floco de neve dourado -->
+    <!-- Floco de neve MAIS DOURADO -->
     <g id="snowflake">
       <path d="M 0,-15 L 0,15 M -15,0 L 15,0 M -10.6,-10.6 L 10.6,10.6 M -10.6,10.6 L 10.6,-10.6" 
-            stroke="#D4AF37" stroke-width="1.5" stroke-linecap="round"/>
-      <circle cx="0" cy="-15" r="2" fill="#D4AF37"/>
-      <circle cx="0" cy="15" r="2" fill="#D4AF37"/>
-      <circle cx="-15" cy="0" r="2" fill="#D4AF37"/>
-      <circle cx="15" cy="0" r="2" fill="#D4AF37"/>
-      <circle cx="-10.6" cy="-10.6" r="2" fill="#D4AF37"/>
-      <circle cx="10.6" cy="10.6" r="2" fill="#D4AF37"/>
-      <circle cx="-10.6" cy="10.6" r="2" fill="#D4AF37"/>
-      <circle cx="10.6" cy="-10.6" r="2" fill="#D4AF37"/>
+            stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="0" cy="-15" r="2.5" fill="#FFD700"/>
+      <circle cx="0" cy="15" r="2.5" fill="#FFD700"/>
+      <circle cx="-15" cy="0" r="2.5" fill="#FFD700"/>
+      <circle cx="15" cy="0" r="2.5" fill="#FFD700"/>
+      <circle cx="-10.6" cy="-10.6" r="2.5" fill="#FFD700"/>
+      <circle cx="10.6" cy="10.6" r="2.5" fill="#FFD700"/>
+      <circle cx="-10.6" cy="10.6" r="2.5" fill="#FFD700"/>
+      <circle cx="10.6" cy="-10.6" r="2.5" fill="#FFD700"/>
     </g>
   </defs>
   
