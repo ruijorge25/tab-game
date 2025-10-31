@@ -1323,15 +1323,19 @@ select:focus, .select:focus{
   to{ opacity:1; transform:translateY(0); }
 }
 
-/* Animação dos cards do menu */
 .hero-card,
 .login-card,
-.stats-card{
+.stats-card,
+.settings-card-shortcuts,
+.settings-card-quick {   
   animation:cardFadeIn 0.6s ease-out backwards;
 }
 
+
 .login-card{ animation-delay:0.1s; }
+.settings-card-quick { animation-delay: 0.1s; } 
 .stats-card{ animation-delay:0.2s; }
+.settings-card-shortcuts { animation-delay: 0.2s; } 
 
 @keyframes cardFadeIn{
   from{ opacity:0; transform:translateY(30px) scale(0.95); }
@@ -1635,16 +1639,6 @@ select:focus, .select:focus{
   font-size:0.95rem;
 }
 
-.modal-victory .result-message,
-.modal-victory .stat-value {
-  color:var(--turquoise);
-}
-
-/* Cor de Derrota para Mensagem E Números */
-.modal-defeat .result-message,
-.modal-defeat .stat-value {
-  color:var(--amber);
-}
 
 /*  Confetti  */
 .confetti-piece{

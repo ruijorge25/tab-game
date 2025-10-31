@@ -14,8 +14,8 @@ export function Board({ engine, onSelect, onMove }) {
     const board = engine.getBoard();
 
     // Define o grid: 4 linhas fixas x N colunas
-    grid.style.gridTemplateColumns = `repeat(${cols}, 64px)`;
-    grid.style.gridTemplateRows = 'repeat(4, 64px)';
+    grid.style.gridTemplateColumns = `repeat(${cols}, 72px)`;
+    grid.style.gridTemplateRows = 'repeat(4, 72px)';
     grid.innerHTML = '';
 
     for (let r = 0; r < 4; r++) {

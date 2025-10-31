@@ -483,15 +483,21 @@ class Fog {
   constructor() {
     this.x = Math.random() * canvasBg.width;
     this.y = Math.random() * canvasBg.height; 
-    this.vx = (Math.random() - 0.5) * 0.3;
-    this.vy = (Math.random() - 0.5) * 0.2; 
-    this.size = Math.random() * 150 + 100;
-    this.opacity = Math.random() * 0.15 + 0.1;
+    this.vx = (Math.random() - 0.5) * 1.2 + 0.3; // Velocidade horizontal mais rápida
+    this.vy = (Math.random() - 0.5) * 0.6; // Velocidade vertical
+    this.size = Math.random() * 180 + 120; // Névoa um pouco maior
+    this.opacity = Math.random() * 0.2 + 0.15; // Mais visível
+    this.pulsePhase = Math.random() * Math.PI * 2;
+    this.pulseSpeed = 0.02 + Math.random() * 0.01;
   }
   
   update() {
     this.x += this.vx;
     this.y += this.vy; 
+    this.pulsePhase += this.pulseSpeed;
+    
+    // Movimento ondulante
+    this.y += Math.sin(this.pulsePhase) * 0.3;
     
     if (this.x < -this.size) this.x = canvasBg.width + this.size;
     if (this.x > canvasBg.width + this.size) this.x = -this.size;
@@ -501,8 +507,10 @@ class Fog {
   }
   
   draw(ctx) { // Recebe o contexto 
+    const currentOpacity = this.opacity + Math.sin(this.pulsePhase) * 0.05;
     const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size);
-    gradient.addColorStop(0, `rgba(147, 112, 219, ${this.opacity})`);
+    gradient.addColorStop(0, `rgba(147, 112, 219, ${currentOpacity})`);
+    gradient.addColorStop(0.5, `rgba(147, 112, 219, ${currentOpacity * 0.5})`);
     gradient.addColorStop(1, 'rgba(147, 112, 219, 0)');
     
     ctx.fillStyle = gradient;
@@ -1432,11 +1440,11 @@ function initChristmas() {
   particlesFg.push(sleigh2);
   
   // Grinch a caminhar
-  if (Math.random() > 0.3) {
-    const grinch = new GrinchWalking();
-    grinch.x = canvasFg.width + Math.random() * 400;
-    particlesFg.push(grinch);
-  }
+
+  const grinch = new GrinchWalking();
+  grinch.x = canvasFg.width + Math.random() * 400;
+  particlesFg.push(grinch);
+  
   
   // Adiciona a neve acumulada 
   particlesBg.push(new SnowDrift());

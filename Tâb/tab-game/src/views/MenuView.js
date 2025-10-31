@@ -27,7 +27,7 @@ export function renderMenuView(container){
      `}
     </div>
 
-    <div class="card settings">
+    <div class="card settings settings-card-shortcuts">
      <h3>Atalhos</h3>
      <div class="shortcuts-list">
       <div class="shortcut-item"><kbd class="kbd">R</kbd><span class="shortcut-desc">Ver Regras</span></div>
@@ -52,7 +52,7 @@ export function renderMenuView(container){
    </section>
 
       <section class="menu-panel">
-    <div class="card settings settings-scrollable">
+    <div class="card settings settings-scrollable settings-card-quick">
      <h3>Configuração Rápida</h3>
      <div class="field">
       <label>Tamanho do tabuleiro</label>
@@ -129,6 +129,10 @@ export function renderMenuView(container){
  root.querySelector('#q-ai').onchange = (e) => {
   state.config.aiLevel = e.target.value;
  };
+
+ state.config.columns = parseInt(root.querySelector('#q-cols').value, 10);
+ state.config.mode = root.querySelector('#q-mode').value;
+ state.config.aiLevel = root.querySelector('#q-ai').value;
 
  // Configurações
  root.querySelector('#btn-config').onclick = () => {
