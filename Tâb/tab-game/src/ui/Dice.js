@@ -40,23 +40,28 @@ export function Dice(onRoll){
     btn.classList.add('is-disabled'); 
     btn.style.opacity = '0.6';
 
+    // Se as animações estiverem LIGADAS, faz o "shuffle"
     if (state.config.animations !== false) {
-    arr.forEach(s => s.classList.add('shuffling'));
-    await new Promise(r=>setTimeout(r,800));
-    arr.forEach(s => s.classList.remove('shuffling'));
-  }
+      arr.forEach(s => s.classList.add('shuffling'));
+      await new Promise(r=>setTimeout(r,800));
+      arr.forEach(s => s.classList.remove('shuffling'));
+    }
+
     const value = await onRoll?.();
     setDiceVisual(value);
     
-    //  BOUNCE quando resultado aparece
-    sticks.classList.add('dice-bounce');
-    setTimeout(() => sticks.classList.remove('dice-bounce'), 600);
-    
-    //  PARTÍCULAS DOURADAS para 6 ou 4 (jogada extra)
-    if ((value === 6 || value === 4 || value ===1) && state.config.animations !== false) {
-      createGoldenParticles(wrap);
+    // Se as animações estiverem LIGADAS, faz o "bounce" e as "partículas"
+    if (state.config.animations !== false) {
+      // 1. BOUNCE (movido para dentro do if)
+      sticks.classList.add('dice-bounce');
+      setTimeout(() => sticks.classList.remove('dice-bounce'), 600);
+      
+      // 2. PARTÍCULAS (com a tua correção para o valor 1)
+      if (value === 6 || value === 4 || value === 1) {
+        createGoldenParticles(wrap);
+      }
     }
- };
+  };
 
   function setDiceVisual(val){
     // 0 claras = 6, 1=1, 2=2, 3=3, 4=4
