@@ -499,7 +499,7 @@ select:focus, .select:focus{
 
 .game-scene .hud{
   display:grid;
-  grid-template-columns:auto 1fr auto;
+  grid-template-columns:150px 1fr 240px;
   align-items:center;
   gap:var(--space-lg);
   padding:12px 32px;
@@ -511,10 +511,6 @@ select:focus, .select:focus{
   -webkit-backdrop-filter:blur(8px);
 }
 
-.turn-display {
-  margin-left: -180px;
-}
-
 .game-scene .logo{
   font-family:var(--font-display);
   font-weight:900;
@@ -524,6 +520,8 @@ select:focus, .select:focus{
   -webkit-background-clip:text;
   background-clip:text;
   -webkit-text-fill-color:transparent;
+  filter: drop-shadow(0 2px 8px rgba(203, 178, 121, 0.8))
+          drop-shadow(0 0 12px rgba(212, 175, 55, 0.6));
 }
 
 /*  Novo layout do HUD com indicadores CENTRADOS */
@@ -532,6 +530,7 @@ select:focus, .select:focus{
   align-items: center;
   justify-content: center;
   gap: var(--space-xl);
+  margin-left: -120px;
 }
 
 .player-indicator {
@@ -679,7 +678,8 @@ select:focus, .select:focus{
   gap:var(--space-xl);
   padding:var(--space-xl);
   align-items:center;
-  overflow:auto;
+  overflow:visible;
+  min-height:0;
 }
 
 .board-pane{
@@ -889,6 +889,7 @@ select:focus, .select:focus{
     inset 0 2px 6px rgba(255,255,255,0.15),
     inset 0 -2px 6px rgba(0,0,0,0.4);
   position:relative;
+  overflow:visible;
 }
 
 /* Padrão geométrico árabe na borda */
@@ -943,7 +944,7 @@ select:focus, .select:focus{
 .board-grid{
   display:grid;
   gap:10px;
-  padding:28px;
+  padding:32px;
   background:
     repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(212,175,55,0.02) 10px, rgba(212,175,55,0.02) 20px),
     linear-gradient(135deg, #FFFBF5 0%, #F8F3E8 50%, #FFF8F0 100%);
@@ -952,6 +953,7 @@ select:focus, .select:focus{
     inset 0 6px 20px rgba(139,90,60,0.15),
     inset 0 -2px 8px rgba(255,255,255,0.5);
   position:relative;
+  overflow:visible;
 }
 
 /* Brilho sutil no tabuleiro */
@@ -1005,19 +1007,30 @@ select:focus, .select:focus{
 
 .board-cell.is-selected{
   outline:3px solid var(--turquoise);
-  outline-offset:2px;
+  outline-offset:3px;
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.08),
+    inset 0 -1px 2px rgba(255,255,255,1),
+    0 0 0 1px rgba(28,160,148,0.3),
+    0 0 20px rgba(28,160,148,0.4);
   animation:goldenPulse 0.9s ease-in-out;
+  z-index:10;
 }
 
 @keyframes goldenPulse{
   0%,100%{ 
-    box-shadow:0 0 0 6px rgba(212,175,55,0.4);
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,0.08),
+      inset 0 -1px 2px rgba(255,255,255,1),
+      0 0 0 1px rgba(28,160,148,0.3),
+      0 0 20px rgba(28,160,148,0.4);
   }
-  33%{ 
-    box-shadow:0 0 0 12px rgba(212,175,55,0.7), 0 0 30px rgba(212,175,55,0.5);
-  }
-  66%{ 
-    box-shadow:0 0 0 6px rgba(212,175,55,0.4);
+  50%{ 
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,0.08),
+      inset 0 -1px 2px rgba(255,255,255,1),
+      0 0 0 1px rgba(28,160,148,0.5),
+      0 0 30px rgba(28,160,148,0.7);
   }
 }
 
@@ -1316,6 +1329,9 @@ select:focus, .select:focus{
 
 .logo{
   animation:logoAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-shadow: 0 2px 8px rgba(203, 178, 121, 0.8),
+               0 0 20px rgba(212, 175, 55, 0.6),
+               0 4px 16px rgba(203, 178, 121, 0.4);
 }
 
 @keyframes logoAppear{
@@ -1328,7 +1344,7 @@ select:focus, .select:focus{
   display:flex;
   flex-direction:column;
   gap:var(--space-lg);
-  width:280px;
+  width:240px;
   align-self:flex-start;
 }
 
@@ -1339,23 +1355,6 @@ select:focus, .select:focus{
   border:1px solid rgba(203,178,121,0.2);
   box-shadow:var(--shadow-lg);
   backdrop-filter:blur(10px);
-}
-
-.shortcuts-card {
-  margin-top: var(--space-lg);
-  background:rgba(31,40,40,0.5);
-  padding:var(--space-md);
-  border-radius:var(--r-md);
-  border:1px solid rgba(203,178,121,0.15);
-  backdrop-filter:blur(8px);
-}
-
-.shortcuts-card .shortcuts-list {
-  gap: 6px;
-}
-
-.shortcuts-card .shortcut-desc {
-  font-size: 0.8rem;
 }
 
 /* REMOVIDO: Caixa de mensagens (agora usa toasts)
@@ -1846,6 +1845,40 @@ select:focus, .select:focus{
   font-weight: 600;
 }
 
+/* ========== SHORTCUTS POPOVER ========== */
+.shortcuts-popover {
+  position: fixed;
+  background: rgba(31, 40, 40, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(203, 178, 121, 0.3);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-elevated);
+  padding: var(--space-lg);
+  min-width: 240px;
+  z-index: 1001;
+  animation: popoverFadeIn 0.2s ease-out;
+}
+
+.shortcuts-popover .shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.shortcuts-popover .shortcut-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 6px 0;
+}
+
+.shortcuts-popover .shortcut-desc {
+  color: var(--cream);
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
 /* --- Toggle Switch (Botão Mute) --- */
 .toggle-switch {
   width: 44px;
@@ -1916,4 +1949,582 @@ input[type="range"]::-moz-range-thumb {
 
 input[type="range"]:hover::-webkit-slider-thumb {
   transform: scale(1.1);
+}
+
+/* ========== CONFIG VIEW ========== */
+.config-shell {
+  width: min(900px, 95vw);
+  max-height: 90vh;
+  background: var(--bg-card);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-elevated);
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(12px);
+}
+
+.config-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding: var(--space-lg) var(--space-xl);
+  background: rgba(14, 18, 18, 0.6);
+  border-bottom: 1px solid rgba(203, 178, 121, 0.2);
+}
+
+.btn-back {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background: transparent;
+  border: 1px solid rgba(203, 178, 121, 0.3);
+  color: var(--sand);
+  padding: 8px 16px;
+  border-radius: var(--r-md);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-back:hover {
+  border-color: var(--sand);
+  background: rgba(203, 178, 121, 0.1);
+  transform: translateX(-4px);
+}
+
+.btn-back .icon-svg {
+  width: 18px;
+  height: 18px;
+}
+
+.config-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  color: var(--sand);
+  margin: 0;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px rgba(203, 178, 121, 0.3);
+}
+
+.config-content {
+  padding: var(--space-xl);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.config-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.config-content::-webkit-scrollbar-track {
+  background: rgba(31, 40, 40, 0.3);
+  border-radius: 5px;
+}
+
+.config-content::-webkit-scrollbar-thumb {
+  background: rgba(203, 178, 121, 0.5);
+  border-radius: 5px;
+}
+
+.config-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(203, 178, 121, 0.7);
+}
+
+.config-section {
+  background: rgba(14, 18, 18, 0.4);
+  border: 1px solid rgba(203, 178, 121, 0.2);
+  border-radius: var(--r-md);
+  padding: var(--space-lg);
+  transition: all var(--transition-base);
+}
+
+.config-section:hover {
+  border-color: rgba(203, 178, 121, 0.4);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--sand);
+  margin: 0 0 var(--space-lg);
+  letter-spacing: 1.5px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.config-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.config-group:last-child {
+  margin-bottom: 0;
+}
+
+.config-label {
+  color: var(--cream);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.config-control {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.config-hint {
+  color: rgba(248, 245, 225, 0.6);
+  font-size: 0.85rem;
+  margin: 4px 0 0 0;
+  font-style: italic;
+}
+
+.select-field {
+  width: 100%;
+  background: rgba(31, 40, 40, 0.9);
+  color: var(--cream);
+  border: 1px solid rgba(203, 178, 121, 0.3);
+  padding: 12px 16px;
+  border-radius: var(--r-md);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.select-field:hover {
+  border-color: rgba(203, 178, 121, 0.5);
+  background: rgba(45, 52, 52, 0.9);
+}
+
+.select-field:focus {
+  outline: none;
+  border-color: var(--sand);
+  box-shadow: 0 0 0 3px rgba(203, 178, 121, 0.15);
+}
+
+.slider-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.slider-value {
+  min-width: 50px;
+  text-align: center;
+  color: var(--sand);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.config-actions {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin-top: var(--space-md);
+}
+
+.config-actions:hover {
+  box-shadow: none;
+}
+
+.btn-block {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.btn-block .icon-svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsividade para Config */
+@media (max-width: 768px) {
+  .config-shell {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+  
+  .config-header {
+    padding: var(--space-md) var(--space-lg);
+  }
+  
+  .config-title {
+    font-size: 1.4rem;
+  }
+  
+  .config-content {
+    padding: var(--space-lg);
+  }
+}
+
+/* ========== SELETOR DE TEMAS ========== */
+.theme-selector {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-md);
+  width: 100%;
+}
+
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  background: rgba(31, 40, 40, 0.6);
+  border: 2px solid rgba(203, 178, 121, 0.3);
+  border-radius: var(--r-md);
+  padding: var(--space-md);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-option:hover {
+  border-color: rgba(203, 178, 121, 0.6);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.theme-option.is-active {
+  border-color: var(--accent-gold);
+  background: rgba(212, 175, 55, 0.15);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.theme-option.is-active::before {
+  content: '✓';
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  background: var(--accent-gold);
+  color: var(--ink);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.theme-preview {
+  width: 100%;
+  height: 80px;
+  border-radius: var(--r-sm);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-preview::before,
+.theme-preview::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+}
+
+/* Preview Deserto (padrão atual) */
+.theme-preview-desert {
+  background: linear-gradient(135deg, #CBB279 0%, #C17F59 50%, #A35F3B 100%);
+}
+.theme-preview-desert::before {
+  width: 30px;
+  height: 30px;
+  background: #F8F5E1;
+  top: 10px;
+  left: 10px;
+  box-shadow: 0 0 10px rgba(248, 245, 225, 0.5);
+}
+.theme-preview-desert::after {
+  width: 25px;
+  height: 25px;
+  background: #1CA094;
+  bottom: 10px;
+  right: 10px;
+  box-shadow: 0 0 10px rgba(28, 160, 148, 0.5);
+}
+
+/* Preview Noite no Deserto */
+.theme-preview-desert-night {
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #2d2d5f 100%);
+  position: relative;
+  overflow: hidden;
+}
+.theme-preview-desert-night::before {
+  width: 28px;
+  height: 28px;
+  background: #ffd700;
+  top: 12px;
+  left: 12px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.9);
+  animation: twinkleSlow 3s ease-in-out infinite;
+}
+.theme-preview-desert-night::after {
+  width: 22px;
+  height: 22px;
+  background: #87ceeb;
+  bottom: 12px;
+  right: 12px;
+  box-shadow: 0 0 10px rgba(135, 206, 235, 0.8);
+}
+
+@keyframes twinkleSlow {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Preview Halloween */
+.theme-preview-halloween {
+  background: linear-gradient(135deg, #1a0033 0%, #2d0052 50%, #663399 100%);
+  position: relative;
+}
+.theme-preview-halloween::before {
+  width: 30px;
+  height: 30px;
+  background: #ff8c00;
+  top: 10px;
+  left: 10px;
+  box-shadow: 0 0 15px rgba(255, 140, 0, 0.8);
+}
+.theme-preview-halloween::after {
+  width: 24px;
+  height: 24px;
+  background: #9370db;
+  bottom: 10px;
+  right: 10px;
+  box-shadow: 0 0 12px rgba(147, 112, 219, 0.7);
+}
+
+/* Preview Natal */
+.theme-preview-christmas {
+  background: linear-gradient(135deg, #0f1c0d 0%, #1a3d1a 50%, #2e8b57 100%);
+  position: relative;
+}
+.theme-preview-christmas::before {
+  width: 28px;
+  height: 28px;
+  background: #ffd700;
+  top: 12px;
+  left: 12px;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.8);
+}
+.theme-preview-christmas::after {
+  width: 26px;
+  height: 26px;
+  background: #c41e3a;
+  bottom: 10px;
+  right: 10px;
+  box-shadow: 0 0 12px rgba(196, 30, 58, 0.7);
+}
+
+.theme-name {
+  color: var(--cream);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* ========== TEMAS DE CORES ========== */
+
+/* ========== TEMA: DESERT NIGHT (Noite no Deserto) ========== */
+body[data-theme="desert-night"] {
+  --sand: #a8b8d8;
+  --amber: #d4a574;
+  --terracotta: #8b6f47;
+  --turquoise: #87ceeb;
+  --ink: #0a0e27;
+  --olive: #1a1a2e;
+  --cream: #e8e8ff;
+  --red: #ff6b6b;
+  --blue: #4ecdc4;
+  --bg-primary: #0a0e27;
+  --bg-card: rgba(26, 26, 46, 0.9);
+  --text-primary: #e8e8ff;
+  --text-secondary: #a8b8d8;
+  --border-primary: #a8b8d8;
+  --accent-gold: #ffd700;
+}
+
+body[data-theme="desert-night"] .piece-yellow {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+body[data-theme="desert-night"] .piece-blue {
+  background: linear-gradient(135deg, #87ceeb 0%, #5dade2 100%);
+  box-shadow: 0 4px 12px rgba(135, 206, 235, 0.4);
+}
+
+body[data-theme="desert-night"] .player-icon-yellow {
+  background: radial-gradient(circle at 30% 30%, #ffd700, #ffed4e);
+}
+
+body[data-theme="desert-night"] .player-icon-blue {
+  background: radial-gradient(circle at 30% 30%, #87ceeb, #5dade2);
+}
+
+body[data-theme="desert-night"] .active-player .player-icon-yellow {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
+}
+
+body[data-theme="desert-night"] .active-player .player-icon-blue {
+  box-shadow: 0 0 20px rgba(135, 206, 235, 0.9);
+}
+
+body[data-theme="desert-night"]::before {
+  background-image: url('../assets/patterns/desert-night-pattern.svg');
+  filter: brightness(0.75) contrast(1.15);
+  animation: parallaxFloat 40s ease-in-out infinite;
+}
+
+/* ========== TEMA: HALLOWEEN (Assustador) ========== */
+body[data-theme="halloween"] {
+  --sand: #b19cd9;
+  --amber: #9370db;
+  --terracotta: #663399;
+  --turquoise: #8b7ab8;
+  --ink: #1a0033;
+  --olive: #2d0052;
+  --cream: #f5e6ff;
+  --red: #ff6347;
+  --blue: #9370db;
+  --bg-primary: #1a0033;
+  --bg-card: rgba(45, 0, 82, 0.92);
+  --text-primary: #f5e6ff;
+  --text-secondary: #b19cd9;
+  --border-primary: #b19cd9;
+  --accent-gold: #ff8c00;
+}
+
+body[data-theme="halloween"] .piece-yellow {
+  background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.5), 0 0 20px rgba(255, 140, 0, 0.3);
+}
+
+body[data-theme="halloween"] .piece-blue {
+  background: linear-gradient(135deg, #9370db 0%, #8b7ab8 100%);
+  box-shadow: 0 4px 12px rgba(147, 112, 219, 0.5), 0 0 20px rgba(147, 112, 219, 0.3);
+}
+
+body[data-theme="halloween"] .player-icon-yellow {
+  background: radial-gradient(circle at 30% 30%, #ff8c00, #ffa500);
+}
+
+body[data-theme="halloween"] .player-icon-blue {
+  background: radial-gradient(circle at 30% 30%, #9370db, #8b7ab8);
+}
+
+body[data-theme="halloween"] .active-player .player-icon-yellow {
+  box-shadow: 0 0 20px rgba(255, 140, 0, 0.9);
+}
+
+body[data-theme="halloween"] .active-player .player-icon-blue {
+  box-shadow: 0 0 20px rgba(147, 112, 219, 0.9);
+}
+
+body[data-theme="halloween"]::before {
+  background-image: url('../assets/patterns/halloween-pattern.svg');
+  filter: saturate(1.3) contrast(1.1);
+  animation: parallaxFloat 50s ease-in-out infinite;
+}
+
+/* ========== TEMA: CHRISTMAS (Natal) ========== */
+body[data-theme="christmas"] {
+  --sand: #ffcccc;
+  --amber: #c41e3a;
+  --terracotta: #8b0000;
+  --turquoise: #2e8b57;
+  --ink: #0f1c0d;
+  --olive: #1a3d1a;
+  --cream: #fffaf0;
+  --red: #c41e3a;
+  --blue: #2e8b57;
+  --bg-primary: #0f1c0d;
+  --bg-card: rgba(26, 61, 26, 0.92);
+  --text-primary: #fffaf0;
+  --text-secondary: #ffcccc;
+  --border-primary: #c41e3a;
+  --accent-gold: #ffd700;
+}
+
+body[data-theme="christmas"] .piece-yellow {
+  background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+body[data-theme="christmas"] .piece-blue {
+  background: linear-gradient(135deg, #c41e3a 0%, #dc143c 100%);
+  box-shadow: 0 4px 12px rgba(196, 30, 58, 0.5), 0 0 20px rgba(196, 30, 58, 0.3);
+}
+
+body[data-theme="christmas"] .player-icon-yellow {
+  background: radial-gradient(circle at 30% 30%, #ffd700, #ffed4e);
+}
+
+body[data-theme="christmas"] .player-icon-blue {
+  background: radial-gradient(circle at 30% 30%, #c41e3a, #dc143c);
+}
+
+body[data-theme="christmas"] .active-player .player-icon-yellow {
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
+}
+
+body[data-theme="christmas"] .active-player .player-icon-blue {
+  box-shadow: 0 0 20px rgba(196, 30, 58, 0.9);
+}
+
+body[data-theme="christmas"]::before {
+  background-image: url('../assets/patterns/christmas-pattern.svg');
+  filter: saturate(1.2) brightness(1.05);
+  animation: parallaxFloat 45s ease-in-out infinite;
+}
+
+/* ========== ESTILOS DE PEÇAS ========== */
+
+/* Estilo Clássico - Cores sólidas */
+body[data-pieceStyle="classic"] .piece-yellow {
+  background: #F4A460;
+  box-shadow: 0 2px 6px rgba(244, 164, 96, 0.4);
+}
+
+body[data-pieceStyle="classic"] .piece-blue {
+  background: #4682B4;
+  box-shadow: 0 2px 6px rgba(70, 130, 180, 0.4);
+}
+
+/* Estilo Minimalista - Sem gradientes nem sombras */
+body[data-pieceStyle="minimal"] .piece-yellow {
+  background: #D4A574;
+  box-shadow: none;
+  border: 2px solid #A67C52;
+}
+
+body[data-pieceStyle="minimal"] .piece-blue {
+  background: #5B9BD5;
+  box-shadow: none;
+  border: 2px solid #3A7CAB;
+}
+
+body[data-pieceStyle="minimal"] .piece {
+  border-radius: 4px;
 }

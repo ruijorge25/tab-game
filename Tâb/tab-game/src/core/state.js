@@ -7,13 +7,19 @@ export const state = {
     firstPlayer: 'human', 
     aiLevel: 'easy',
     
-    // ---- SUBSTITUIR soundEnabled: true POR ISTO ----
+    // Áudio
     audio: {
-      musicVolume: 0.3, // Volume da música de 0.0 a 1.0
-      musicOn: false,    // Música ligada/desligada
-      sfxOn: true       // Efeitos sonoros ligados/desligados
-    }
-    // ---- FIM DA ALTERAÇÃO ----
+      musicVolume: 0.3,
+      musicOn: false,
+      sfxOn: true
+    },
+    
+    // Interface
+    theme: 'desert', // 'desert' | 'night' | 'ocean' | 'forest' | 'royal'
+    animations: true,
+    showHints: true,
+    animSpeed: 'normal', // 'fast' | 'normal' | 'slow'
+    pieceStyle: 'modern' // 'modern' | 'classic' | 'minimal'
   },
   game: { started: false, dice: null, turn: 1 }
 };

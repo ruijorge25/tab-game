@@ -1,12 +1,6 @@
 import { navigateTo } from '../core/router.js';
 import { state } from '../core/state.js';
 import { showRulesModal, showLeaderboardModal } from '../ui/Modal.js';
-// 1. IMPORTA AS FUNÇÕES DE ÁUDIO NECESSÁRIAS
-import { 
-  updateMusicStatus,
-  setMusicVolume,
-  toggleMusic
-} from '../core/audio.js';
 
 export function renderMenuView(container){
  const root = document.createElement('div');
@@ -14,7 +8,6 @@ export function renderMenuView(container){
 
  const savedUsername = localStorage.getItem('tab_username') || '';
 
- // 2. O HTML FOI ATUALIZADO
  root.innerHTML = `
   <div class="menu-shell">
       <section class="menu-panel">
@@ -42,33 +35,6 @@ export function renderMenuView(container){
       <div class="shortcut-item"><kbd class="kbd">Tab</kbd><span class="shortcut-desc">Navegar</span></div>
      </div>
     </div>
-
-        <div class="card settings">
-     <h3>Áudio</h3>
-     <div class="field">
-      <div class="audio-control">
-       <label>Música</label>
-       <button 
-        id="btn-mute-music" 
-        class="toggle-switch ${state.config.audio.musicOn ? 'is-on' : ''}"
-        aria-label="Ligar/Desligar Música"
-       ></button>
-      </div>
-            <div 
-       class="audio-control" 
-       id="volume-control-wrapper" 
-       style="display: ${state.config.audio.musicOn ? 'grid' : 'none'}; margin-top: 16px;"
-      >
-       <label>Volume</label>
-       <input 
-        type="range" 
-        id="slider-music-vol" 
-        min="0" max="1" step="0.05" 
-        value="${state.config.audio.musicVolume}"
-       />
-      </div>
-     </div>
-    </div>
        </section>
 
       <section class="menu-panel">
@@ -94,7 +60,7 @@ export function renderMenuView(container){
        <option value="7">7 colunas</option>
        <option value="9" selected>9 colunas</option>
        <option value="11">11 colunas</option>
-       </select>
+       </select>
      </div>
      <div class="field">
       <label>Modo de Jogo</label>
@@ -114,9 +80,7 @@ export function renderMenuView(container){
          </div>
    </section>
   </div>
- `;
-
- // ===== Event Handlers =====
+ `; // ===== Event Handlers =====
 
  // Login
  const loginBtn = root.querySelector('#btn-login');
@@ -150,7 +114,6 @@ export function renderMenuView(container){
 
  // Novo Jogo
  root.querySelector('#btn-play').onclick = () => {
-  // REMOVIDA a chamada 'updateMusicStatus()' daqui
   root.classList.remove('page-enter');
   root.classList.add('page-leave');
   setTimeout(() => navigateTo('game'), 180);
@@ -166,12 +129,12 @@ export function renderMenuView(container){
  root.querySelector('#q-ai').onchange = (e) => {
   state.config.aiLevel = e.target.value;
  };
- 
- // 5. HANDLERS ANTIGOS DE SOM REMOVIDOS (q-music, q-sfx)
 
- // Configurações (placeholder)
+ // Configurações
  root.querySelector('#btn-config').onclick = () => {
-  navigateTo('config');
+  root.classList.remove('page-enter');
+  root.classList.add('page-leave');
+  setTimeout(() => navigateTo('config'), 180);
  };
 
  // Regras Modal
@@ -206,28 +169,6 @@ export function renderMenuView(container){
   document.removeEventListener('keydown', handleKeyPress);
  };
  window.cleanupMenuView = cleanup;
-
-
- // 6. NOVOS HANDLERS DE ÁUDIO (A TUA LÓGICA)
- const btnMuteMusic = root.querySelector('#btn-mute-music');
- const sliderVolume = root.querySelector('#slider-music-vol');
- const sliderWrapper = root.querySelector('#volume-control-wrapper');
-
- // Handler para Ligar/Desligar
- btnMuteMusic.onclick = () => {
-  // 1. Chama a lógica de áudio
-  toggleMusic();
-  // 2. Atualiza o botão
-  btnMuteMusic.classList.toggle('is-on', state.config.audio.musicOn);
-  // 3. Mostra/Esconde o slider (A TUA LÓGICA)
-  sliderWrapper.style.display = state.config.audio.musicOn ? 'grid' : 'none';
- };
-
- // Handler para o Slider
- sliderVolume.oninput = (e) => {
-  setMusicVolume(e.target.value);
- };
- // ---- FIM DOS NOVOS HANDLERS ----
 
  container.appendChild(root);
 }

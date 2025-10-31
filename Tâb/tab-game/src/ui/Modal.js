@@ -182,11 +182,13 @@ export function showRulesModal() {
  * Modal de Vitória com confetti
  */
 export function showVictoryModal({ winner, stats = {}, onPlayAgain, onGoToMenu }) {
-  //  Cria MUITO mais confetti
-  createConfetti(150); // Era 50, agora 150
-  
   const winnerName = winner === 1 ? 'Você' : 'IA';
   const isPlayerWin = winner === 1;
+  
+  // Só cria confetti se o jogador vencer
+  if (isPlayerWin) {
+    createConfetti(150);
+  }
   
   showModal({
     title: isPlayerWin ? ' Vitória!' : ' Derrota',

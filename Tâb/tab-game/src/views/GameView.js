@@ -70,6 +70,19 @@ export function renderGameView(container) {
             <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1.33.47 2.48 1.5 3.5.76.76 1.23 1.52 1.41 2.5"></path>
           </svg>
         </button>
+        <button class="btn-icon" id="btn-shortcuts" title="Atalhos de Teclado">
+          <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+            <line x1="6" y1="8" x2="6.01" y2="8"></line>
+            <line x1="10" y1="8" x2="10.01" y2="8"></line>
+            <line x1="14" y1="8" x2="14.01" y2="8"></line>
+            <line x1="18" y1="8" x2="18.01" y2="8"></line>
+            <line x1="8" y1="12" x2="8.01" y2="12"></line>
+            <line x1="12" y1="12" x2="12.01" y2="12"></line>
+            <line x1="16" y1="12" x2="16.01" y2="12"></line>
+            <line x1="7" y1="16" x2="17" y2="16"></line>
+          </svg>
+        </button>
         <button class="btn-icon" id="btn-rules" title="Regras do Jogo">
           <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -90,23 +103,6 @@ export function renderGameView(container) {
       <section class="board-pane"></section>
       <aside class="right-pane">
         <div class="dice-card" id="dice-holder"></div>
-        <div class="shortcuts-card">
-          <h4 style="color:var(--sand);font-size:0.85rem;margin-bottom:8px;font-weight:600;">Atalhos</h4>
-          <div class="shortcuts-list">
-            <div class="shortcut-item">
-              <kbd class="kbd">Espaço</kbd>
-              <span class="shortcut-desc">Lançar Dado</span>
-            </div>
-            <div class="shortcut-item">
-              <kbd class="kbd">H</kbd>
-              <span class="shortcut-desc">Dicas</span>
-            </div>
-            <div class="shortcut-item">
-              <kbd class="kbd">Esc</kbd>
-              <span class="shortcut-desc">Sair</span>
-            </div>
-          </div>
-        </div>
       </aside>
     </main>
 
@@ -276,11 +272,78 @@ export function renderGameView(container) {
   diceBtn = dice.querySelector('button'); // Guarda a referência do botão
 
   // Ações topo
-  root.querySelector('#btn-exit').onclick = () => navigateTo('menu');
+  root.querySelector('#btn-exit').onclick = () => {
+    // Sair sem guardar estatísticas - apenas pede confirmação
+    showModal({
+      title: 'Sair do Jogo',
+      content: '<p>Quer sair do jogo? O progresso não será guardado.</p>',
+      buttons: [
+        { 
+          text: 'Sim, sair', 
+          className: 'btn btn-secondary',
+          onClick: () => navigateTo('menu')
+        },
+        { text: 'Continuar a jogar', className: 'btn btn-primary' }
+      ]
+    });
+  };
   root.querySelector('#btn-rules').onclick = () => showRulesModal();
   root.querySelector('#btn-hints').onclick = () => {
-    // toast('Funcionalidade de dicas em desenvolvimento.', 'info'); // <-- Remove
-    showHint(); // <-- Adiciona
+    showHint();
+  };
+  
+  // Popover de atalhos
+  root.querySelector('#btn-shortcuts').onclick = (e) => {
+    e.stopPropagation();
+    const existing = document.querySelector('.shortcuts-popover');
+    if (existing) {
+      existing.remove();
+      return;
+    }
+    
+    const popover = document.createElement('div');
+    popover.className = 'shortcuts-popover';
+    popover.innerHTML = `
+      <h4 style="color:var(--sand);font-size:0.95rem;margin-bottom:12px;font-weight:700;text-align:center;">⌨️ Atalhos de Teclado</h4>
+      <div class="shortcuts-list">
+        <div class="shortcut-item">
+          <kbd class="kbd">Espaço</kbd>
+          <span class="shortcut-desc">Lançar Dado</span>
+        </div>
+        <div class="shortcut-item">
+          <kbd class="kbd">H</kbd>
+          <span class="shortcut-desc">Ver Dica</span>
+        </div>
+        <div class="shortcut-item">
+          <kbd class="kbd">R</kbd>
+          <span class="shortcut-desc">Regras</span>
+        </div>
+        <div class="shortcut-item">
+          <kbd class="kbd">Esc</kbd>
+          <span class="shortcut-desc">Sair do Jogo</span>
+        </div>
+      </div>
+    `;
+    
+    // Posiciona o popover relativo ao botão
+    const btn = e.currentTarget;
+    const rect = btn.getBoundingClientRect();
+    popover.style.position = 'fixed';
+    popover.style.top = `${rect.bottom + 10}px`;
+    popover.style.right = `${window.innerWidth - rect.right}px`;
+    
+    document.body.appendChild(popover);
+    
+    // Fecha ao clicar fora
+    setTimeout(() => {
+      const closeHandler = (ev) => {
+        if (!popover.contains(ev.target) && ev.target !== btn) {
+          popover.remove();
+          document.removeEventListener('click', closeHandler, true);
+        }
+      };
+      document.addEventListener('click', closeHandler, true);
+    }, 100);
   };
   
   const btnSound = root.querySelector('#btn-toggle-sound');
@@ -321,17 +384,17 @@ export function renderGameView(container) {
   };
   
   root.querySelector('#btn-give-up').onclick = () => {
-    // Pede confirmação
+    // Desistir conta como derrota e guarda estatísticas
     showModal({
       title: 'Desistir do Jogo',
-      content: '<p>Tem a certeza que quer desistir? A vitória será dada à IA.</p>',
+      content: '<p>Tem a certeza que quer desistir? <strong>Isto contará como uma derrota</strong> e a vitória será dada à IA.</p>',
       buttons: [
         { 
           text: 'Sim, desistir', 
           className: 'btn btn-primary', // (CSS irá tratar disto como "perigo")
           onClick: () => {
             const { winner } = engine.giveUp(); // O motor calcula quem vence
-            triggerEndGame(winner);
+            triggerEndGame(winner); // Guarda estatísticas da derrota
           }
         },
         { text: 'Cancelar', className: 'btn btn-secondary' }
