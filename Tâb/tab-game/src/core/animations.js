@@ -1048,7 +1048,7 @@ class SantaSleigh {
   }
 }
 
-// --- 3.5. Grinch a Caminhar (FG) ---
+// --- 3.5. Grinch a Caminhar (FG) - VERSÃO ULTRA REALISTA ---
 class GrinchWalking {
   constructor() {
     this.reset();
@@ -1057,19 +1057,21 @@ class GrinchWalking {
   reset() {
     // Começa à direita e vai para a esquerda (a fugir!)
     this.x = canvasFg.width + 200;
-    this.y = canvasFg.height - 100; // Caminha no chão
-    this.speed = -2.5; // Mais lento que o Pai Natal (a carregar o saco!)
+    this.y = canvasFg.height - 95; // Caminha no chão
+    this.speed = -2.2; // Velocidade natural de caminhada
     this.walkPhase = 0;
-    this.walkSpeed = 0.15; // Velocidade da animação de caminhada
-    this.scale = 1.2; // Um pouco maior
+    this.walkSpeed = 0.12; // Velocidade mais suave da animação
+    this.scale = 1.3; // Tamanho maior e mais imponente
+    this.breathPhase = 0;
   }
   
   update() {
     this.x += this.speed;
     this.walkPhase += this.walkSpeed;
+    this.breathPhase += 0.03;
     
-    // Efeito de subir/descer ao caminhar
-    this.bobY = Math.sin(this.walkPhase * 2) * 3;
+    // Efeito de subir/descer ao caminhar (mais subtil)
+    this.bobY = Math.sin(this.walkPhase * 2) * 2;
     
     // Reset quando sair pela esquerda
     if (this.x < -250) {
@@ -1081,25 +1083,36 @@ class GrinchWalking {
     ctx.save();
     ctx.translate(this.x, this.y + this.bobY);
     ctx.scale(this.scale, this.scale);
-    ctx.globalAlpha = 0.95;
+    ctx.globalAlpha = 0.98;
     
     // Espelha para olhar para a esquerda
     ctx.scale(-1, 1);
     
+    // Sombra no chão
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+    ctx.beginPath();
+    ctx.ellipse(0, 50, 30, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+    
     // Saco de prendas nas costas
-    this.drawSack(ctx, -25, -40);
+    this.drawSack(ctx, -22, -35);
+    
+    // Pernas (animadas) - desenhar primeiro para ficar atrás
+    this.drawLegs(ctx);
     
     // Corpo do Grinch
     this.drawBody(ctx);
     
+    // Braço traseiro segurando o saco
+    this.drawBackArm(ctx);
+    
     // Cabeça
     this.drawHead(ctx);
     
-    // Pernas (animadas)
-    this.drawLegs(ctx);
-    
-    // Braço segurando o saco
-    this.drawArm(ctx);
+    // Braço da frente (livre)
+    this.drawFrontArm(ctx);
     
     ctx.globalAlpha = 1;
     ctx.restore();
@@ -1109,230 +1122,617 @@ class GrinchWalking {
     ctx.save();
     ctx.translate(x, y);
     
-    // Saco castanho grande
-    ctx.fillStyle = '#8B4513';
-    ctx.strokeStyle = '#654321';
-    ctx.lineWidth = 2;
+    // Balanço do saco ao caminhar
+    const swing = Math.sin(this.walkPhase) * 0.08;
+    ctx.rotate(swing);
     
+    // Sombra do saco
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
     ctx.beginPath();
-    ctx.ellipse(0, 0, 20, 28, 0, 0, Math.PI * 2);
+    ctx.ellipse(3, 3, 24, 32, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Saco VERMELHO grande com gradiente 3D
+    const gradient = ctx.createRadialGradient(-8, -15, 5, 0, 0, 30);
+    gradient.addColorStop(0, '#DC143C');
+    gradient.addColorStop(0.5, '#B71C1C');
+    gradient.addColorStop(1, '#8B0000');
+    ctx.fillStyle = gradient;
+    ctx.strokeStyle = '#5D0000';
+    ctx.lineWidth = 2.5;
+    
+    // Formato do saco mais realista (com volume)
+    ctx.beginPath();
+    ctx.moveTo(-18, -22);
+    ctx.bezierCurveTo(-22, -10, -22, 10, -15, 25);
+    ctx.bezierCurveTo(-10, 30, 10, 30, 15, 25);
+    ctx.bezierCurveTo(22, 10, 22, -10, 18, -22);
+    ctx.bezierCurveTo(15, -25, -15, -25, -18, -22);
+    ctx.closePath();
     ctx.fill();
     ctx.stroke();
     
-    // Amarração do saco (corda)
-    ctx.strokeStyle = '#D2691E';
+    // Amarração do saco (corda grossa dourada)
+    ctx.strokeStyle = '#D4AF37';
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(0, -20, 18, Math.PI + 0.3, Math.PI * 2 - 0.3);
+    ctx.stroke();
+    
+    // Corda mais fina em cima
+    ctx.strokeStyle = '#FFD700';
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(-15, -20);
-    ctx.lineTo(15, -20);
+    ctx.arc(0, -20, 17, Math.PI + 0.4, Math.PI * 2 - 0.4);
     ctx.stroke();
     
-    // Nó da corda
-    ctx.fillStyle = '#D2691E';
+    // Nó da corda volumétrico dourado
+    ctx.fillStyle = '#D4AF37';
+    ctx.strokeStyle = '#B8860B';
+    ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.arc(0, -20, 4, 0, Math.PI * 2);
+    ctx.ellipse(-3, -20, 6, 5, -0.3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    
+    // ========== DUAS PRENDAS NO TOPO DO SACO (saindo para fora) ==========
+    
+    // PRENDA 1 (esquerda no topo)
+    ctx.save();
+    ctx.translate(-10, -28);
+    ctx.rotate(-0.25);
+    
+    // Caixa verde com gradiente
+    const gift1Grad = ctx.createLinearGradient(-5, -5, 5, 5);
+    gift1Grad.addColorStop(0, '#4CAF50');
+    gift1Grad.addColorStop(1, '#2E7D32');
+    ctx.fillStyle = gift1Grad;
+    ctx.fillRect(-5.5, -5.5, 11, 11);
+    ctx.strokeStyle = '#1B5E20';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(-5.5, -5.5, 11, 11);
+    
+    // Laço dourado
+    ctx.strokeStyle = '#FFD700';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(0, -5.5);
+    ctx.lineTo(0, 5.5);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-5.5, 0);
+    ctx.lineTo(5.5, 0);
+    ctx.stroke();
+    
+    // Laço em cima (decorativo)
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(-2.5, -8, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(2.5, -8, 2.2, 0, Math.PI * 2);
     ctx.fill();
     
-    // Textura do saco (alguns patches/remendos)
-    ctx.fillStyle = '#A0522D';
-    ctx.globalAlpha = 0.4;
+    // Centro do laço
+    ctx.fillStyle = '#FFA500';
     ctx.beginPath();
-    ctx.ellipse(-8, 5, 6, 8, 0.3, 0, Math.PI * 2);
+    ctx.arc(0, -8, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.restore();
+    
+    // PRENDA 2 (direita no topo)
+    ctx.save();
+    ctx.translate(10, -26);
+    ctx.rotate(0.2);
+    
+    // Caixa azul com gradiente
+    const gift2Grad = ctx.createLinearGradient(-4.5, -4.5, 4.5, 4.5);
+    gift2Grad.addColorStop(0, '#2196F3');
+    gift2Grad.addColorStop(1, '#1565C0');
+    ctx.fillStyle = gift2Grad;
+    ctx.fillRect(-5, -5, 10, 10);
+    ctx.strokeStyle = '#0D47A1';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(-5, -5, 10, 10);
+    
+    // Laço vermelho
+    ctx.strokeStyle = '#FF1744';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(0, -5);
+    ctx.lineTo(0, 5);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-5, 0);
+    ctx.lineTo(5, 0);
+    ctx.stroke();
+    
+    // Laço em cima (decorativo)
+    ctx.fillStyle = '#FF1744';
+    ctx.beginPath();
+    ctx.arc(-2, -7.5, 2, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.ellipse(7, -5, 5, 7, -0.2, 0, Math.PI * 2);
+    ctx.arc(2, -7.5, 2, 0, Math.PI * 2);
     ctx.fill();
-    ctx.globalAlpha = 1;
+    
+    // Centro do laço
+    ctx.fillStyle = '#C62828';
+    ctx.beginPath();
+    ctx.arc(0, -7.5, 1.3, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.restore();
+    
+    // Remendos no saco (mantém o visual usado)
+    ctx.fillStyle = 'rgba(139, 0, 0, 0.4)';
+    ctx.beginPath();
+    ctx.ellipse(-12, 10, 6, 9, 0.2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = 'rgba(100, 0, 0, 0.4)';
+    ctx.beginPath();
+    ctx.ellipse(10, -2, 5, 7, -0.3, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Costuras nos remendos
+    ctx.strokeStyle = 'rgba(62, 47, 31, 0.7)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 2]);
+    ctx.strokeRect(-16, 6, 8, 8);
+    ctx.strokeRect(7, -6, 6, 8);
+    ctx.setLineDash([]);
+    
+    // Rugas/vincos do saco
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 5; i++) {
+      ctx.beginPath();
+      ctx.moveTo(-12, -15 + i * 8);
+      ctx.quadraticCurveTo(0, -13 + i * 8, 12, -15 + i * 8);
+      ctx.stroke();
+    }
     
     ctx.restore();
   }
   
   drawBody(ctx) {
-    // Corpo verde (magro e peludo)
-    ctx.fillStyle = '#6B8E23'; // Verde do Grinch
+    const breath = Math.sin(this.breathPhase) * 1.5;
+    
+    // Corpo verde peludo com gradiente
+    const bodyGrad = ctx.createRadialGradient(-3, -5, 5, 0, 0, 25);
+    bodyGrad.addColorStop(0, '#7FA047');
+    bodyGrad.addColorStop(1, '#556B2F');
+    ctx.fillStyle = bodyGrad;
+    
     ctx.beginPath();
-    ctx.ellipse(0, 0, 18, 25, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 0 + breath, 16, 26, 0, 0, Math.PI * 2);
     ctx.fill();
     
-    // Roupa vermelha rasgada (túnica)
-    ctx.fillStyle = '#8B0000';
+    // Pelos/textura no corpo (linhas sutis)
+    ctx.strokeStyle = 'rgba(75, 95, 32, 0.3)';
+    ctx.lineWidth = 0.5;
+    for (let i = 0; i < 8; i++) {
+      const angle = (Math.PI * 2 / 8) * i;
+      const x1 = Math.cos(angle) * 12;
+      const y1 = Math.sin(angle) * 20;
+      const x2 = Math.cos(angle) * 16;
+      const y2 = Math.sin(angle) * 26;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+    }
+    
+    // Roupa vermelha rasgada (túnica) com mais detalhes
+    const clothGrad = ctx.createLinearGradient(-15, -5, 15, 20);
+    clothGrad.addColorStop(0, '#A01010');
+    clothGrad.addColorStop(1, '#6B0000');
+    ctx.fillStyle = clothGrad;
+    
     ctx.beginPath();
-    ctx.moveTo(-15, -5);
-    ctx.lineTo(15, -5);
-    ctx.lineTo(18, 20);
-    ctx.lineTo(-18, 20);
+    ctx.moveTo(-14, -3);
+    ctx.lineTo(14, -5);
+    ctx.lineTo(17, 20);
+    ctx.lineTo(-17, 20);
     ctx.closePath();
     ctx.fill();
     
-    // Rasgões na roupa
+    // Borda rasgada
     ctx.strokeStyle = '#4B0000';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    
+    // Rasgões na roupa (mais realistas)
+    ctx.strokeStyle = '#2B0000';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(-10, 5);
-    ctx.lineTo(-7, 10);
-    ctx.lineTo(-10, 15);
+    ctx.moveTo(-9, 3);
+    ctx.lineTo(-7, 8);
+    ctx.lineTo(-11, 13);
+    ctx.lineTo(-8, 17);
     ctx.stroke();
     
     ctx.beginPath();
-    ctx.moveTo(8, 0);
-    ctx.lineTo(11, 8);
+    ctx.moveTo(7, -2);
+    ctx.lineTo(10, 5);
+    ctx.lineTo(8, 10);
     ctx.stroke();
     
-    // Cinto (corda velha)
-    ctx.strokeStyle = '#654321';
-    ctx.lineWidth = 3;
+    // Cinto/corda velha com textura
+    ctx.strokeStyle = '#4A3C28';
+    ctx.lineWidth = 4;
     ctx.beginPath();
-    ctx.moveTo(-18, 8);
-    ctx.lineTo(18, 8);
+    ctx.moveTo(-17, 6);
+    ctx.lineTo(17, 8);
     ctx.stroke();
+    
+    // Nó do cinto
+    ctx.fillStyle = '#3A2C18';
+    ctx.beginPath();
+    ctx.arc(-12, 7, 3, 0, Math.PI * 2);
+    ctx.fill();
   }
   
   drawHead(ctx) {
     ctx.save();
-    ctx.translate(0, -30);
+    ctx.translate(0, -28);
     
-    // Cabeça verde
+    // Cabeça verde com gradiente e volume
+    const headGrad = ctx.createRadialGradient(-5, -8, 3, 0, 0, 18);
+    headGrad.addColorStop(0, '#9DC183');
+    headGrad.addColorStop(0.6, '#7FA047');
+    headGrad.addColorStop(1, '#5A7B2E');
+    ctx.fillStyle = headGrad;
+    
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 14, 18, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Contorno da cabeça
+    ctx.strokeStyle = 'rgba(75, 95, 32, 0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    
+    // Orelhas pontudas
     ctx.fillStyle = '#6B8E23';
+    // Orelha esquerda
     ctx.beginPath();
-    ctx.ellipse(0, 0, 14, 16, 0, 0, Math.PI * 2);
+    ctx.ellipse(-13, -5, 4, 7, -0.5, 0, Math.PI * 2);
     ctx.fill();
+    ctx.strokeStyle = '#556B2F';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    // Orelha direita
+    ctx.beginPath();
+    ctx.ellipse(13, -5, 4, 7, 0.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
     
-    // Olhos amarelos malvados
-    ctx.fillStyle = '#FFFF00';
+    // Olhos amarelos brilhantes com brilho
+    ctx.fillStyle = '#FFFF33';
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = '#FFFF00';
     ctx.beginPath();
-    ctx.ellipse(-5, -3, 4, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(-5.5, -5, 5, 6.5, -0.1, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.ellipse(5, -3, 4, 5, 0, 0, Math.PI * 2);
+    ctx.ellipse(5.5, -5, 5, 6.5, 0.1, 0, Math.PI * 2);
     ctx.fill();
+    ctx.shadowBlur = 0;
+    
+    // Contorno dos olhos
+    ctx.strokeStyle = '#E6E600';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(-5.5, -5, 5, 6.5, -0.1, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.ellipse(5.5, -5, 5, 6.5, 0.1, 0, Math.PI * 2);
+    ctx.stroke();
     
     // Pupilas pequenas e malvadas
     ctx.fillStyle = '#000000';
     ctx.beginPath();
-    ctx.arc(-5, -2, 2, 0, Math.PI * 2);
+    ctx.arc(-5.5, -4, 2.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(5, -2, 2, 0, Math.PI * 2);
+    ctx.arc(5.5, -4, 2.5, 0, Math.PI * 2);
     ctx.fill();
     
-    // Sobrancelhas malvadas
+    // Reflexo nos olhos (mais realista)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    ctx.beginPath();
+    ctx.arc(-7, -6, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(4, -6, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Sobrancelhas grossas e malvadas (mais definidas)
     ctx.strokeStyle = '#4B5F20';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
     ctx.beginPath();
-    ctx.moveTo(-9, -7);
-    ctx.lineTo(-3, -5);
+    ctx.moveTo(-10, -10);
+    ctx.quadraticCurveTo(-7.5, -8.5, -2, -8);
     ctx.stroke();
     ctx.beginPath();
-    ctx.moveTo(9, -7);
-    ctx.lineTo(3, -5);
-    ctx.stroke();
-    
-    // Sorriso malvado largo
-    ctx.strokeStyle = '#000000';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(0, 3, 10, 0.1, Math.PI - 0.1);
+    ctx.moveTo(10, -10);
+    ctx.quadraticCurveTo(7.5, -8.5, 2, -8);
     ctx.stroke();
     
-    // Dentes pontiagudos
-    ctx.fillStyle = '#FFFFFF';
-    for (let i = -8; i <= 8; i += 4) {
+    // Bochechas (detalhes faciais)
+    ctx.fillStyle = 'rgba(127, 160, 71, 0.3)';
+    ctx.beginPath();
+    ctx.ellipse(-9, 2, 3, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(9, 2, 3, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Sorriso malvado LARGO e curvado (boca fechada primeiro)
+    ctx.fillStyle = '#2B3D10';
+    ctx.beginPath();
+    ctx.ellipse(0, 7, 12, 5, 0, 0, Math.PI);
+    ctx.fill();
+    
+    // Linha do sorriso
+    ctx.strokeStyle = '#1A2508';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(0, 5, 11, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+    
+    // Dentes superiores organizados
+    ctx.fillStyle = '#FFFACD';
+    ctx.strokeStyle = '#1A2508';
+    ctx.lineWidth = 0.8;
+    
+    const teethPositions = [-9, -6, -3, 0, 3, 6, 9];
+    teethPositions.forEach((x, i) => {
+      // Dente
       ctx.beginPath();
-      ctx.moveTo(i, 8);
-      ctx.lineTo(i - 2, 12);
-      ctx.lineTo(i + 2, 12);
+      ctx.moveTo(x - 1.2, 6.5);
+      ctx.lineTo(x, 10);
+      ctx.lineTo(x + 1.2, 6.5);
       ctx.closePath();
       ctx.fill();
-    }
+      ctx.stroke();
+      
+      // Linha entre dentes
+      if (i > 0) {
+        ctx.beginPath();
+        ctx.moveTo(x - 1.5, 6.5);
+        ctx.lineTo(x - 1.5, 8);
+        ctx.stroke();
+      }
+    });
     
-    // Nariz pequeno
-    ctx.fillStyle = '#556B2F';
-    ctx.beginPath();
-    ctx.ellipse(0, 1, 3, 4, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // Nariz pequeno e pontudo (mais definido)
+    const noseGrad = ctx.createLinearGradient(-1, -2, 1, 4);
+    noseGrad.addColorStop(0, '#6B8E23');
+    noseGrad.addColorStop(1, '#556B2F');
+    ctx.fillStyle = noseGrad;
     
-    // Gorro de Pai Natal roubado (torto)
-    ctx.fillStyle = '#cc0000';
-    ctx.save();
-    ctx.rotate(-0.3); // Torto
     ctx.beginPath();
-    ctx.moveTo(-10, -12);
-    ctx.lineTo(10, -12);
-    ctx.lineTo(12, -24);
-    ctx.lineTo(-8, -24);
+    ctx.moveTo(0, -1);
+    ctx.lineTo(-2.5, 3);
+    ctx.lineTo(2.5, 3);
     ctx.closePath();
     ctx.fill();
     
-    // Pompom
-    ctx.fillStyle = 'white';
+    ctx.strokeStyle = '#4B5F20';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Narinas
+    ctx.fillStyle = '#2B3D10';
     ctx.beginPath();
-    ctx.arc(10, -26, 4, 0, Math.PI * 2);
+    ctx.arc(-1, 2.5, 1, 0, Math.PI * 2);
     ctx.fill();
+    ctx.beginPath();
+    ctx.arc(1, 2.5, 1, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Gorro de Pai Natal roubado (torto e amassado)
+    ctx.fillStyle = '#C41E3A';
+    ctx.strokeStyle = '#8B0000';
+    ctx.lineWidth = 1.5;
+    ctx.save();
+    ctx.rotate(-0.35);
+    
+    ctx.beginPath();
+    ctx.moveTo(-12, -14);
+    ctx.quadraticCurveTo(-11, -16, 12, -14);
+    ctx.lineTo(16, -28);
+    ctx.quadraticCurveTo(14, -30, -10, -27);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    
+    // Borda branca do gorro (um pouco suja)
+    ctx.fillStyle = '#F5F5DC';
+    ctx.beginPath();
+    ctx.rect(-12, -16, 24, 3.5);
+    ctx.fill();
+    ctx.strokeStyle = '#E8E8D0';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Pompom volumétrico
+    ctx.fillStyle = '#F5F5DC';
+    ctx.strokeStyle = '#E8E8D0';
+    ctx.beginPath();
+    ctx.arc(13, -30, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    
+    // Detalhe no pompom
+    ctx.fillStyle = '#FFFFFF';
+    ctx.beginPath();
+    ctx.arc(11, -31, 2, 0, Math.PI * 2);
+    ctx.fill();
+    
     ctx.restore();
+    
+    // Pelos/cabelo saindo do gorro (mais naturais)
+    ctx.strokeStyle = '#6B8E23';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    for (let i = 0; i < 6; i++) {
+      const angle = -0.3 + (i * 0.1);
+      ctx.beginPath();
+      ctx.moveTo(-11 + i * 4, -13);
+      ctx.quadraticCurveTo(-10 + i * 4, -10, -12 + i * 4.5, -8);
+      ctx.stroke();
+    }
     
     ctx.restore();
   }
   
   drawLegs(ctx) {
     // Animação de caminhada - pernas alternadas
-    const leftLegAngle = Math.sin(this.walkPhase) * 0.4;
-    const rightLegAngle = Math.sin(this.walkPhase + Math.PI) * 0.4;
+    const leftLegAngle = Math.sin(this.walkPhase) * 0.5;
+    const rightLegAngle = Math.sin(this.walkPhase + Math.PI) * 0.5;
     
+    // Perna esquerda (traseira)
     ctx.save();
-    
-    // Perna esquerda
-    ctx.save();
-    ctx.translate(-8, 22);
+    ctx.translate(-7, 24);
     ctx.rotate(leftLegAngle);
-    ctx.fillStyle = '#6B8E23';
-    ctx.fillRect(-4, 0, 8, 25);
-    // Pé
+    
+    const legGrad = ctx.createLinearGradient(-3, 0, 3, 25);
+    legGrad.addColorStop(0, '#7FA047');
+    legGrad.addColorStop(1, '#556B2F');
+    ctx.fillStyle = legGrad;
+    ctx.strokeStyle = '#4B5F20';
+    ctx.lineWidth = 1;
+    
+    ctx.fillRect(-3.5, 0, 7, 26);
+    ctx.strokeRect(-3.5, 0, 7, 26);
+    
+    // Pé com dedos
     ctx.fillStyle = '#4B5F20';
     ctx.beginPath();
-    ctx.ellipse(0, 25, 6, 4, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 26, 7, 4, 0, 0, Math.PI * 2);
     ctx.fill();
+    
+    // Dedos/garras
+    for (let i = -1; i <= 1; i++) {
+      ctx.fillStyle = '#3A4B18';
+      ctx.beginPath();
+      ctx.moveTo(i * 3, 28);
+      ctx.lineTo(i * 3 - 1, 31);
+      ctx.lineTo(i * 3 + 1, 31);
+      ctx.closePath();
+      ctx.fill();
+    }
     ctx.restore();
     
-    // Perna direita
+    // Perna direita (frente)
     ctx.save();
-    ctx.translate(8, 22);
+    ctx.translate(7, 24);
     ctx.rotate(rightLegAngle);
-    ctx.fillStyle = '#6B8E23';
-    ctx.fillRect(-4, 0, 8, 25);
+    
+    ctx.fillStyle = legGrad;
+    ctx.fillRect(-3.5, 0, 7, 26);
+    ctx.strokeRect(-3.5, 0, 7, 26);
+    
     // Pé
     ctx.fillStyle = '#4B5F20';
     ctx.beginPath();
-    ctx.ellipse(0, 25, 6, 4, 0, 0, Math.PI * 2);
+    ctx.ellipse(0, 26, 7, 4, 0, 0, Math.PI * 2);
     ctx.fill();
+    
+    // Dedos
+    for (let i = -1; i <= 1; i++) {
+      ctx.fillStyle = '#3A4B18';
+      ctx.beginPath();
+      ctx.moveTo(i * 3, 28);
+      ctx.lineTo(i * 3 - 1, 31);
+      ctx.lineTo(i * 3 + 1, 31);
+      ctx.closePath();
+      ctx.fill();
+    }
     ctx.restore();
+  }
+  
+  drawBackArm(ctx) {
+    // Braço segurando o saco (atrás)
+    ctx.save();
+    ctx.translate(-16, -12);
+    const armSwing = Math.sin(this.walkPhase) * 0.15;
+    ctx.rotate(-0.6 + armSwing);
+    
+    const armGrad = ctx.createLinearGradient(-3, 0, 3, 20);
+    armGrad.addColorStop(0, '#7FA047');
+    armGrad.addColorStop(1, '#556B2F');
+    ctx.fillStyle = armGrad;
+    
+    ctx.beginPath();
+    ctx.ellipse(0, 10, 5, 16, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Contorno
+    ctx.strokeStyle = '#4B5F20';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Mão/garra com 4 dedos
+    ctx.fillStyle = '#556B2F';
+    ctx.beginPath();
+    ctx.arc(0, 22, 6, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Garras longas e pontiagudas
+    ctx.strokeStyle = '#3A4B18';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    for (let i = 0; i < 4; i++) {
+      const angle = -0.5 + i * 0.35;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(angle) * 5, 22 + Math.sin(angle) * 5);
+      ctx.lineTo(Math.cos(angle) * 12, 22 + Math.sin(angle) * 12);
+      ctx.stroke();
+    }
     
     ctx.restore();
   }
   
-  drawArm(ctx) {
-    // Braço segurando o saco (atrás do corpo)
+  drawFrontArm(ctx) {
+    // Braço da frente balançando
     ctx.save();
-    ctx.translate(-18, -15);
-    ctx.rotate(-0.5);
+    ctx.translate(14, -8);
+    const armSwing = Math.sin(this.walkPhase + Math.PI) * 0.3;
+    ctx.rotate(0.3 + armSwing);
     
+    const armGrad = ctx.createLinearGradient(-3, 0, 3, 18);
+    armGrad.addColorStop(0, '#8FB84D');
+    armGrad.addColorStop(1, '#6B8E23');
+    ctx.fillStyle = armGrad;
+    
+    ctx.beginPath();
+    ctx.ellipse(0, 9, 5, 15, 0, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.strokeStyle = '#556B2F';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Mão fechada
     ctx.fillStyle = '#6B8E23';
     ctx.beginPath();
-    ctx.ellipse(0, 0, 6, 18, 0, 0, Math.PI * 2);
+    ctx.arc(0, 20, 5.5, 0, Math.PI * 2);
     ctx.fill();
     
-    // Mão/garra
-    ctx.fillStyle = '#556B2F';
-    ctx.beginPath();
-    ctx.arc(-2, 18, 5, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Dedos/garras
+    // Dedos curvados
     ctx.strokeStyle = '#4B5F20';
     ctx.lineWidth = 2;
     for (let i = 0; i < 3; i++) {
       ctx.beginPath();
-      ctx.moveTo(-2 + (i - 1) * 3, 20);
-      ctx.lineTo(-2 + (i - 1) * 3, 25);
+      ctx.arc(0 + (i - 1) * 2, 22, 3, 0, Math.PI);
       ctx.stroke();
     }
     
