@@ -92,7 +92,13 @@ body::before{
 }
 
 /* Transições de páginas */
-.view{ width:100%; height:100%; }
+.view{ 
+  width:100%; 
+  height:100%; 
+  /* ADICIONADO: Centra o .menu-shell no meio do ecrã */
+  display: grid;
+  place-items: center;
+}
 .page-enter{ animation:fadeIn var(--transition-fast) ease forwards; }
 .page-leave{ animation:fadeOut var(--transition-fast) ease forwards; }
 @keyframes fadeIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
@@ -219,6 +225,7 @@ button{
   display:flex;
   flex-direction:column;
   gap:var(--space-lg);
+  height: 100%;
 }
 
 .logo-bloc{
@@ -227,6 +234,7 @@ button{
   justify-content:center;
   height:160px;
   position:relative;
+  margin-top: -40px;
 }
 
 .hero-card{
@@ -237,6 +245,7 @@ button{
   gap:var(--space-xl);
   position:relative;
   overflow:hidden;
+  margin-top: 84px;
 }
 
 /* Brilho sutil no hero card */
@@ -1597,7 +1606,6 @@ select:focus, .select:focus{
 .stat-value{
   font-size:2rem;
   font-weight:700;
-  color:var(--amber);
   transition: all 0.3s ease;
 }
 
@@ -1608,7 +1616,7 @@ select:focus, .select:focus{
 
 @keyframes statPop {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.2); color: var(--accent-gold); }
+  50% { transform: scale(1.2); }
 }
 
 .result-tip{
@@ -1620,11 +1628,14 @@ select:focus, .select:focus{
   font-size:0.95rem;
 }
 
-.modal-victory .result-message{
+.modal-victory .result-message,
+.modal-victory .stat-value {
   color:var(--turquoise);
 }
 
-.modal-defeat .result-message{
+/* Cor de Derrota para Mensagem E Números */
+.modal-defeat .result-message,
+.modal-defeat .stat-value {
   color:var(--amber);
 }
 
@@ -2171,6 +2182,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   justify-content: center;
   font-weight: bold;
   font-size: 14px;
+  z-index: 2;
 }
 
 .theme-preview {
@@ -2180,6 +2192,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
   position: relative;
   overflow: hidden;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 1;
 }
 
 .theme-preview::before,
@@ -2500,17 +2513,35 @@ body[data-theme="christmas"] .btn-primary {
     #fffaf0 10px,
     #fffaf0 20px
   );
+  
+  /* 1. ADICIONADO: Força o tamanho do padrão */
+  background-size: 28.28px 28.28px; /* (20px / cos(45)) */
+
   box-shadow: 0 8px 24px rgba(196, 30, 58, 0.4), 
              inset 0 0 0 1px rgba(255,255,255,0.2);
   font-weight: 700;
   border: 2px solid #fffaf0;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  animation: candyCaneScroll 10s linear infinite;
+  text-shadow: 
+    /* O contorno nítido (1px em todas as direções) */
+     1px  1px 0 #000,
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     0px  1px 0 #000,
+     0px -1px 0 #000,
+     1px  0px 0 #000,
+    -1px  0px 0 #000,
+
+    /* Uma sombra suave por trás do contorno para profundidade */
+     0 0 8px rgba(0, 0, 0, 0.7);
+
+  /* 2. ALTERADO: Animação mais rápida para a nova distância */
+  animation: candyCaneScroll 1.5s linear infinite;
 }
 
 @keyframes candyCaneScroll {
   from { background-position: 0 0; }
-  to { background-position: 200px 0; }
+  to { background-position: 28.28px 0; }
 }
 
 body[data-theme="christmas"] .btn-primary:hover {

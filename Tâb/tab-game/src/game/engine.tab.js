@@ -288,7 +288,9 @@ export function createTabEngine(opts = {}) {
       }
     },
     giveUp() {
-      return { winner: currentPlayer === 1 ? 2 : 1 };
+      // O jogador que clica em "desistir" é sempre o Humano (Jogador 1).
+      // Portanto, o vencedor é sempre o Jogador 2 (IA).
+      return { winner: 2 };
     },
     checkWinner() {
       if (pieces[1].length === 0) return 2; // azul vence

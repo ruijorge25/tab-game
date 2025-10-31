@@ -754,7 +754,7 @@ class ChristmasLight {
     this.x = x;
     this.y = 30; // Movido para o topo
     this.index = index;
-    this.colors = ['#c41e3a', '#ffffff', '#2e8b57', '#e6f7ff']; // Cores originais
+    this.colors = ['#c41e3a', '#ffffff', '#ffd700', '#e6f7ff']; // Cores originais
     this.color = this.colors[index % this.colors.length];
     this.glowPhase = Math.random() * Math.PI * 2;
     this.glowSpeed = 0.06 + Math.random() * 0.04;
@@ -816,15 +816,15 @@ class SantaSleigh {
   
   reset() {
     // --- ALTERADO: Começa fora da tela à DIREITA e se move para ESQUERDA ---
-    this.x = canvasFg.width + 300; // Começa à direita
-    this.y = Math.random() * (canvasFg.height * 0.4) + 80; // Usa canvasFg
-    this.speed = -(3 + Math.random() * 2); // Velocidade NEGATIVA para ir para a esquerda
+    this.x = canvasBg.width + 300; // Começa à direita (USA canvasBg)
+    this.y = Math.random() * (canvasBg.height * 0.4) + 80; // Usa canvasBg
+    this.speed = -(1 + Math.random() * 1.5); // Velocidade NEGATIVA para ir para a esquerda
     this.wavePhase = 0;
     this.waveSpeed = 0.05;
-    this.scale = 0.8 + Math.random() * 0.4;
+    this.scale = 0.5 + Math.random() * 0.2;
 
     // Ajusta a altura Y para não ficar tapado pela neve do chão (no BG)
-    const snowLine = canvasFg.height - 80; 
+    const snowLine = canvasBg.height - 80; // (USA canvasBg) 
     if (this.y > snowLine) {
       this.y = snowLine;
     }
@@ -842,34 +842,29 @@ class SantaSleigh {
     }
   }
   
-  draw(ctx) { // Recebe o contexto (será ctxFg)
+  draw(ctx) { // Recebe o contexto (será ctxBg)
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.scale(this.scale, this.scale);
-    ctx.globalAlpha = 0.9;
+    ctx.globalAlpha = 0.4;
     
-    // --- ADICIONADO: Espelha horizontalmente para a rena e o Pai Natal olharem para a esquerda ---
-    ctx.scale(-1, 1); 
-    // Após espelhar, tudo o que é desenhado à direita do centro (0,0) aparecerá à esquerda
-    // e vice-versa. Ajustamos as coordenadas dentro das funções de desenho.
-    
+    const jumpPhase = this.wavePhase;
+
+
     // Renas (3 renas)
     for (let i = 0; i < 3; i++) {
-      // Offset de X inverte-se por causa do espelhamento, mas a lógica permanece a mesma
-      const offsetX = i * -60; // Mantém a distância entre elas
-      const jumpPhase = this.wavePhase + i * 0.5;
-      const jumpY = Math.sin(jumpPhase * 2) * 8;
-      
-      this.drawReindeer(ctx, offsetX, jumpY); // Passa o contexto
+      // (As tuas funções de desenho 'drawReindeer' serão usadas aqui)
+      const offsetX = (i * 60) - 220; // Põe-nas em -220, -160, -100
+      const jumpY = Math.sin((jumpPhase + i * 0.5) * 2) * 8;
+      this.drawReindeer(ctx, offsetX, jumpY);
     }
     
     // Trenó
     this.drawSleigh(ctx, -40, 0); // Passa o contexto
     
     // Pai Natal
-    this.drawSanta(ctx, 0, -10); // Passa o contexto
+    this.drawSanta(ctx, -10, -10); // Passa o contexto
     
-    ctx.globalAlpha = 1;
     ctx.restore();
   }
   
@@ -1101,7 +1096,7 @@ class SnowDrift {
 
 function initChristmas() {
   particlesBg = []; // Partículas para o fundo
-  particlesFg = []; // Partículas para a frente (Pai Natal)
+  particlesFg = []; // Partículas para a frente
   
   // Neve abundante (flocos a cair) -> BG
   const snowflakeCount = 150;
@@ -1119,17 +1114,16 @@ function initChristmas() {
   }
   
   // Pai Natal -> FG
-  particlesFg.push(new SantaSleigh());
+  particlesBg.push(new SantaSleigh());
   
   const sleigh2 = new SantaSleigh();
-  sleigh2.x = canvasFg.width + 800; // Começa mais à direita, usa canvasFg
+  sleigh2.x = canvasBg.width + 800; // Começa mais à direita, usa canvasFg
   sleigh2.speed *= 1.2;
   particlesFg.push(sleigh2);
   
   // Adiciona a neve acumulada -> BG
   particlesBg.push(new SnowDrift());
   
-  // Inicia AMBOS os loops de animação
+  // Inicia loops de animação
   animateBackground(); 
-  animateForeground();
 }

@@ -96,17 +96,6 @@ export function renderConfigView(container) {
               </div>
             </div>
           </div>
-
-          <div class="config-group">
-            <label class="config-label">Estilo das Peças</label>
-            <div class="config-control">
-              <select id="cfg-piece-style" class="select-field">
-                <option value="modern">Moderno - Gradientes suaves</option>
-                <option value="classic">Clássico - Cores sólidas</option>
-                <option value="minimal">Minimalista - Sem efeitos</option>
-              </select>
-            </div>
-          </div>
           
           <div class="config-group">
             <label class="config-label">Animações</label>
@@ -120,40 +109,10 @@ export function renderConfigView(container) {
             </div>
           </div>
 
-          <div class="config-group">
-            <label class="config-label">Mostrar Dicas Visuais</label>
-            <div class="config-control">
-              <button 
-                id="cfg-hints-toggle" 
-                class="toggle-switch ${state.config.showHints !== false ? 'is-on' : ''}"
-                aria-label="Ligar/Desligar Dicas Visuais"
-              ></button>
-              <p class="config-hint">Destaque de jogadas possíveis</p>
-            </div>
-          </div>
 
-          <div class="config-group">
-            <label class="config-label">Velocidade das Animações</label>
-            <div class="config-control">
-              <select id="cfg-anim-speed" class="select-field">
-                <option value="fast">Rápida</option>
-                <option value="normal">Normal</option>
-                <option value="slow">Lenta</option>
-              </select>
-            </div>
-          </div>
         </section>
 
         <!-- AÇÕES -->
-        <section class="config-section config-actions">
-          <button class="btn btn-secondary btn-block" id="btn-reset-config">
-            <svg class="icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-              <path d="M21 3v5h-5"/>
-            </svg>
-            Restaurar Padrões
-          </button>
-        </section>
       </main>
     </div>
   `;
@@ -167,9 +126,6 @@ export function renderConfigView(container) {
     setTimeout(() => navigateTo('menu'), 180);
   };
 
-  // Inicializa valor do select de velocidade de animação
-  root.querySelector('#cfg-anim-speed').value = state.config.animSpeed || 'normal';
-  root.querySelector('#cfg-piece-style').value = state.config.pieceStyle || 'modern';
 
   // Marca o tema ativo
   const currentTheme = state.config.theme || 'desert';
@@ -216,57 +172,12 @@ export function renderConfigView(container) {
     };
   });
 
-  // Interface - Estilo das peças
-  root.querySelector('#cfg-piece-style').onchange = (e) => {
-    state.config.pieceStyle = e.target.value;
-    document.body.dataset.pieceStyle = e.target.value;
-  };
 
   // Interface - Animações
   root.querySelector('#cfg-animations-toggle').onclick = (e) => {
     state.config.animations = !state.config.animations;
     e.target.classList.toggle('is-on', state.config.animations !== false);
     document.body.classList.toggle('no-animations', state.config.animations === false);
-  };
-
-  root.querySelector('#cfg-hints-toggle').onclick = (e) => {
-    state.config.showHints = !state.config.showHints;
-    e.target.classList.toggle('is-on', state.config.showHints !== false);
-  };
-
-  root.querySelector('#cfg-anim-speed').onchange = (e) => {
-    state.config.animSpeed = e.target.value;
-    document.body.dataset.animSpeed = e.target.value;
-  };
-
-  // Restaurar padrões
-  root.querySelector('#btn-reset-config').onclick = () => {
-    if (confirm('Restaurar todas as configurações para os valores padrão?')) {
-      state.config = {
-        columns: 9,
-        mode: 'vs-computer',
-        firstPlayer: 'human',
-        aiLevel: 'easy',
-        audio: {
-          musicVolume: 0.3,
-          musicOn: false,
-          sfxOn: true
-        },
-        theme: 'desert',
-        animations: true,
-        showHints: true,
-        animSpeed: 'normal',
-        pieceStyle: 'modern'
-      };
-      
-      // Aplica o tema padrão
-      document.body.dataset.theme = 'desert';
-      document.body.dataset.pieceStyle = 'modern';
-      
-      // Re-renderiza a view
-      container.innerHTML = '';
-      renderConfigView(container);
-    }
   };
 
   // ===== ATALHOS DE TECLADO =====
