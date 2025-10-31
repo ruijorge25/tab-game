@@ -20,7 +20,7 @@ export function createTabEngine(opts = {}) {
     board[3][c] = pRed;  pieces[1].push(pRed);
   }
 
-  let currentPlayer = 1; // vermelho começa (ou altera fora)
+  let currentPlayer = 1; // vermelho começa
   let dice = null;
   let selected = null;
 

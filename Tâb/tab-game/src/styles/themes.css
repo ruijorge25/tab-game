@@ -1,4 +1,4 @@
-/*TEMA ÁRABE */
+/*TEMA Deserto */
 
 /* Reset básico */
 *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
@@ -66,7 +66,7 @@ body{
   user-select: none;
 }
 
-/* Padrão árabe de fundo com parallax suave */
+/* Padrão de fundo com parallax suave */
 body::before{
   content:'';
   position:fixed;
@@ -2643,36 +2643,6 @@ body[data-theme="christmas"] .kbd {
 /* Labels dourados suaves */
 body[data-theme="christmas"] label {
   color: #ffd700 !important;
-}
-
-/*  ESTILOS DE PEÇAS  */
-
-/* Estilo Clássico - Cores sólidas */
-body[data-pieceStyle="classic"] .piece-yellow {
-  background: #F4A460;
-  box-shadow: 0 2px 6px rgba(244, 164, 96, 0.4);
-}
-
-body[data-pieceStyle="classic"] .piece-blue {
-  background: #4682B4;
-  box-shadow: 0 2px 6px rgba(70, 130, 180, 0.4);
-}
-
-/* Estilo Minimalista - Sem gradientes nem sombras */
-body[data-pieceStyle="minimal"] .piece-yellow {
-  background: #D4A574;
-  box-shadow: none;
-  border: 2px solid #A67C52;
-}
-
-body[data-pieceStyle="minimal"] .piece-blue {
-  background: #5B9BD5;
-  box-shadow: none;
-  border: 2px solid #3A7CAB;
-}
-
-body[data-pieceStyle="minimal"] .piece {
-  border-radius: 4px;
 }
 
 /* Desliga animações específicas de temas */

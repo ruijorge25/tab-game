@@ -1,5 +1,3 @@
-// Utilitários para gestão de eventos - Performance otimizada
-
 /**
  * Debounce: Atrasa execução de função até que param de chamar
  * Útil para resize, scroll, input events

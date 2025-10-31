@@ -15,7 +15,7 @@ export const state = {
     },
     
     // Interface
-    theme: 'desert', // 'desert' | 'night' | 'halloween' | 'christmas'
+    theme: 'desert', // 'desert' | 'night' | 'halloween' | 'natal'
     animations: true,
     showHints: true,
   },

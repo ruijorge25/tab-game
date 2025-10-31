@@ -22,7 +22,7 @@ export function navigateTo(view) {
     return;
   }
   
-  // PERFORMANCE: Limpar event listeners da view anterior
+  // Limpar event listeners da view anterior
   if (window.cleanupMenuView) {
     window.cleanupMenuView();
     window.cleanupMenuView = null;

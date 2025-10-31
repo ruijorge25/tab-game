@@ -193,7 +193,7 @@ export function renderConfigView(container) {
 
   document.addEventListener('keydown', handleKeyPress);
 
-  // PERFORMANCE: Cleanup
+  // Cleanup
   window.cleanupConfigView = () => {
     document.removeEventListener('keydown', handleKeyPress);
   };

@@ -20,7 +20,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   
   // Inicia animações E MÚSICA do tema
-  setThemeMusic(currentTheme); // <-- 2. CHAMA A FUNÇÃO AQUI
+  setThemeMusic(currentTheme); 
   startThemeAnimation(currentTheme);
   
   // Observa mudanças no tema para aplicar efeitos

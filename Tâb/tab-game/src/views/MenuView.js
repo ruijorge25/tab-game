@@ -80,7 +80,7 @@ export function renderMenuView(container){
          </div>
    </section>
   </div>
- `; // ===== Event Handlers =====
+ `; // Event Handlers
 
  // Login
  const loginBtn = root.querySelector('#btn-login');
@@ -119,7 +119,7 @@ export function renderMenuView(container){
   setTimeout(() => navigateTo('game'), 180);
  };
 
- // Atualiza state (Config Rápida)
+ // Atualiza estado
  root.querySelector('#q-cols').onchange = (e) => {
   state.config.columns = parseInt(e.target.value, 10);
  };
@@ -147,7 +147,7 @@ export function renderMenuView(container){
   showLeaderboardModal();
  };
 
- // ===== ATALHOS DE TECLADO =====
+ // Atalhos
  const handleKeyPress = (e) => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
    return;

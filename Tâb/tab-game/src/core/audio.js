@@ -82,9 +82,7 @@ export function updateMusicStatus() {
   }
 }
 
-/**
- * Altera o volume da música (chamado pelo slider)
- */
+/* Altera o volume da música (chamado pelo slider)*/
 export function setMusicVolume(volume) {
   state.config.audio.musicVolume = parseFloat(volume);
   // Se a música estiver desligada, isto apenas guarda o volume
@@ -94,17 +92,13 @@ export function setMusicVolume(volume) {
   }
 }
 
-/**
- * Liga/desliga a MÚSICA
- */
+/*Liga/desliga a MÚSICA*/
 export function toggleMusic() {
   state.config.audio.musicOn = !state.config.audio.musicOn;
   updateMusicStatus();
 }
 
-/**
- * Liga/desliga os EFEITOS SONOROS
- */
+/*Liga/desliga os EFEITOS SONOROS*/
 export function toggleSFX() {
   state.config.audio.sfxOn = !state.config.audio.sfxOn;
 }

@@ -112,12 +112,11 @@ export function renderGameView(container) {
 
   let diceBtn; // Referência para o botão do dado (para desativar)
 
-  // <-- ADICIONADO: Contadores de estatísticas -->
+  // Contadores de estatísticas
   let humanMoves = 0;
   let humanCaptures = 0;
   let aiMoves = 0;
   let aiCaptures = 0;
-  // <-- FIM DA ADIÇÃO -->
 
   // 1. Cria o Popover de Áudio (mas mantém-no escondido)
   const audioPopover = document.createElement('div');
@@ -188,7 +187,7 @@ export function renderGameView(container) {
   // Impede que cliques no slider fechem o popover
   sliderVolume.onclick = (e) => e.stopPropagation();
 
-  // ------- Lógica de Jogo (Humano) -------
+  //Lógica de Jogo (Humano)
 
   // Board
   const board = Board({
@@ -200,24 +199,23 @@ export function renderGameView(container) {
       const moves = engine.getValidMoves(r, c);
       if (!moves.length) { toast('Sem jogadas para essa peça'); return; }
       
-      // playSound('click'); // Som de clique removido
       board.highlightSelection(r, c, moves);
     },
     onMove: (r, c) => {
       try {
         const res = engine.moveSelectedTo(r, c);
-        humanMoves++; // <-- ADICIONADO: Contabiliza jogada humana
+        humanMoves++; // Contabiliza jogada humana
         board.clearHighlights();
         board.render();
         
         if (res?.captured) {
           toast('Captura!', 'success');
-          playSound('goodcapture'); // <-- TOCA O SOM DE CAPTURA BOA
-          humanCaptures++; // <-- ADICIONADO: Contabiliza captura humana
+          playSound('goodcapture'); //TOCA O SOM DE CAPTURA BOA
+          humanCaptures++; //Contabiliza captura humana
         }
         
         // Verificar vitória
-        if (checkWinner()) return; // checkWinner agora toca o som de vitória
+        if (checkWinner()) return; //toca o som de vitória
         
         updateHUD();
         
@@ -234,7 +232,7 @@ export function renderGameView(container) {
   });
   boardPane.appendChild(board.el);
 
-  // Dice
+  // Dado
   const dice = Dice(async () => {
     try {
       const value = engine.rollDice();
@@ -258,7 +256,7 @@ export function renderGameView(container) {
         // 1. Está desativado porque é a vez da IA
         toast('Aguarde, é a vez do computador.', 'info');
       } else if (engine.getDice() != null) {
-        // 2. Está desativado porque o humano já rolou (é o teu caso!)
+        // 2. Está desativado porque o humano já rolou 
         toast('Tem de mover primeiro. Há jogadas disponíveis!', 'warning');
       }
     }
@@ -269,14 +267,14 @@ export function renderGameView(container) {
 
   // Ações topo
   root.querySelector('#btn-exit').onclick = () => {
-  // MODIFICADO: Agora chama o modal de "Desistir"
+  // chama o modal de "Desistir"
   showModal({
-    title: 'Sair do Jogo (Desistir)', // Título atualizado
+    title: 'Sair do Jogo (Desistir)', 
     content: '<p>Tem a certeza que quer sair? <strong>Isto contará como uma derrota</strong> e a vitória será dada à IA.</p>',
     buttons: [
       { 
-        text: 'Sim, sair (Desistir)', // Texto atualizado
-        className: 'btn btn-primary', // (Mantém a classe para cor de "perigo")
+        text: 'Sim, sair (Desistir)', 
+        className: 'btn btn-primary', 
         onClick: () => {
           const { winner } = engine.giveUp(); // O motor calcula quem vence
           triggerEndGame(winner); // Guarda estatísticas da derrota
@@ -383,7 +381,7 @@ export function renderGameView(container) {
     }
   };
 
-  // ===== ATALHOS DE TECLADO =====
+  // ATALHOS DE TECLADO 
   const handleKeyPress = (e) => {
     // Ignora se estiver a escrever num input
     if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
@@ -392,7 +390,7 @@ export function renderGameView(container) {
 
     const key = e.key.toLowerCase();
 
-    // Espaço: Lançar dado (se for vez do humano e dado ainda não foi lançado)
+    // Espaço: Lançar dado
     if (key === ' ' && !e.repeat) {
       if (engine.getCurrentPlayer() === 1 && engine.getDice() === null && diceBtn) {
         e.preventDefault();
@@ -410,15 +408,14 @@ export function renderGameView(container) {
         // Se NENHUM modal estiver aberto, ativa o modal de "Sair" (que agora é "Desistir")
         root.querySelector('#btn-exit').click();
       }
-    } // <-- A CHAVETA DO 'escape' FECHA AQUI
+    } 
 
-    // H: Mostrar dicas (AGORA ESTÁ FORA DO BLOCO 'escape')
+    // H: Mostrar dicas 
     if (key === 'h') {
-      // toast('Funcionalidade de dicas em desenvolvimento.', 'info'); // <-- Remove
-      showHint(); // <-- Adiciona
+      showHint(); 
     }
 
-    // R: Mostrar Regras (ADICIONADO)
+    // R: Mostrar Regras 
     if (key === 'r') {
       showRulesModal();
     }
@@ -426,7 +423,7 @@ export function renderGameView(container) {
 
   document.addEventListener('keydown', handleKeyPress);
 
-  // ⚡ PERFORMANCE: Cleanup de event listeners para evitar memory leaks
+  // Cleanup de event listeners para evitar memory leaks
   const cleanup = () => {
     document.removeEventListener('keydown', handleKeyPress);
     document.removeEventListener('click', handleClickOutside, true);
@@ -435,11 +432,9 @@ export function renderGameView(container) {
   // Armazenar cleanup para ser chamado ao sair da view
   window.cleanupGameView = cleanup;
 
-  /**
-   * Mostra a dica da melhor jogada (IA Nível Difícil).
-   */
+  /* Mostra a dica da melhor jogada (IA Nível Difícil)*/
   function showHint() {
-    // 1. Validar se a dica pode ser dada
+    // Validar se a dica pode ser dada
     if (engine.getCurrentPlayer() !== 1) {
       toast('Não é a sua vez de jogar.', 'warning');
       return;
@@ -449,13 +444,13 @@ export function renderGameView(container) {
       return;
     }
 
-    // 2. Limpa highlights anteriores
+    // Limpa highlights anteriores
     board.clearHighlights();
 
-    // 3. Pede a melhor jogada E a razão à IA
+    // Pede a melhor jogada E a razão à IA
     const hint = getBestMoveWithHint(engine);
 
-    // 4. Verifica se existe uma jogada
+    // Verifica se existe uma jogada
     if (!hint || !hint.move) {
       toast('Não há jogadas possíveis (deveria passar o turno).', 'info');
       return;
@@ -464,8 +459,7 @@ export function renderGameView(container) {
     const { move, reason } = hint;
     const recommendedPiece = move.piece;
 
-    // 5. IMPORTANTE: Chama getValidMoves para o motor da UI
-    // saber qual peça está "selecionada".
+    /* Chama getValidMoves para o motor da UI saber qual peça está "selecionada"*/
     const allValidMovesForPiece = engine.getValidMoves(recommendedPiece.row, recommendedPiece.col);
 
     if (!allValidMovesForPiece.length) {
@@ -474,14 +468,14 @@ export function renderGameView(container) {
       return;
     }
     
-    // 6. Seleciona a PEÇA recomendada e mostra TODOS os seus alvos
+    // Seleciona a PEÇA recomendada e mostra TODOS os seus alvos
     board.highlightSelection(recommendedPiece.row, recommendedPiece.col, allValidMovesForPiece);
     
-    // 7. Mostra a razão num toast
+    // Mostra a razão num toast
     toast(`Dica: ${reason}`, 'success');
   }
 
-  // ------- Lógica de Passe Automático e IA -------
+  // Lógica de Passe Automático e IA 
 
   /**
     * Verifica se o jogador atual (humano ou IA) tem de passar a vez.
@@ -493,7 +487,7 @@ export function renderGameView(container) {
     // Só pode verificar se o dado foi rolado
     if (engine.getDice() == null) return false;
 
-    // A regra é: pode passar? (sem jogadas válidas)
+    // sem jogadas válidas
     if (engine.canPass()) {
       const playerName = player === 1 ? 'Humano' : 'Computador';
       const diceVal = engine.getDice();
@@ -513,36 +507,33 @@ export function renderGameView(container) {
         // Humano passou, vez da IA
         runAITurn();
       }
-      // Se !hasExtraTurn && player === 2, a vez volta ao humano (updateHUD já tratou)
 
       return true;
     }
     return false;
   }
 
-  /**
-    * Executa o turno completo da Inteligência Artificial.
-    */
+  /* Executa o turno completo da Inteligência Artificial*/
   async function runAITurn() {
     if (engine.getCurrentPlayer() !== 2) return;
 
     board.clearHighlights();
     updateHUD(); // Desativa o dado para o humano
     
-    // 1. Simular "pensamento"
+    // Simular "pensamento"
     await new Promise(r => setTimeout(r, 1500));
     
     try {
-      // 2. IA Lança o Dado
+      // IA Lança o Dado
       const diceVal = engine.rollDice();
       toast(`Computador rolou ${diceVal}!`, 'info');
       playSound('flip'); // <-- TOCA O SOM DE FLIP (IA)
       updateHUD();
       
-      // 3. IA Verifica Passe Automático
+      // IA Verifica Passe Automático
       if (checkAutoPass(2)) return; 
 
-      // 4. IA Encontra e Escolhe a Melhor Jogada
+      // IA Encontra e Escolhe a Melhor Jogada
       await new Promise(r => setTimeout(r, 800)); // Pausa para ver o dado
 
       // A IA agora lê o nível de dificuldade do state
@@ -555,23 +546,21 @@ export function renderGameView(container) {
         updateHUD();
         return;
       }
-
-      // 5. IA Executa a Jogada
       
-      // (Re)seleciona a peça no motor (importante!)
+      // seleciona a peça no motor 
       engine.getValidMoves(chosenMove.piece.row, chosenMove.piece.col); 
       const res = engine.moveSelectedTo(chosenMove.target.row, chosenMove.target.col);
-      aiMoves++; // <-- ADICIONADO: Contabiliza jogada da IA
+      aiMoves++; //Contabiliza jogada da IA
 
       board.render();
       if (res?.captured) {
         toast('Computador capturou!', 'success');
-        playSound('badcapture'); // <-- TOCA O SOM DE CAPTURA MÁ
-        aiCaptures++; // <-- ADICIONADO: Contabiliza captura da IA
+        playSound('badcapture'); // TOCA O SOM DE CAPTURA MÁ
+        aiCaptures++; //Contabiliza captura da IA
       }
       
-      // 6. Verificar Fim ou Próximo Turno
-      if (checkWinner()) return; // checkWinner agora toca o som de vitória
+      // Verificar Fim ou Próximo Turno
+      if (checkWinner()) return; 
       
       updateHUD();
 
@@ -600,20 +589,20 @@ export function renderGameView(container) {
   function triggerEndGame(winner) {
     if (!winner) return;
     
-    // --- LÓGICA DE SOM DE VITÓRIA/DERROTA (MODIFICADO) ---
+    // LÓGICA DE SOM DE VITÓRIA/DERROTA
     if (winner === 1) {
       // Jogador 1 (Humano) venceu
       playSound('victory');
     } else {
       // Jogador 2 (IA) venceu ou o Humano desistiu
-      playSound('defeat'); // <-- USA O NOVO SOM DE DERROTA
-    } // <-- TOCA O SOM DE VITÓRIA
+      playSound('defeat'); // USA O  SOM DE DERROTA
+    } // TOCA O SOM DE VITÓRIA
     
     // Salva estatísticas (DO PONTO DE VISTA DO JOGADOR HUMANO)
     const stats = {
       won: winner === 1,
-      captures: humanCaptures, // <-- ALTERADO (usando o contador)
-      moves: humanMoves       // <-- ALTERADO (usando o contador)
+      captures: humanCaptures, // usando o contador
+      moves: humanMoves       // usando o contador
     };
     
     saveGameResult(stats);
@@ -622,7 +611,7 @@ export function renderGameView(container) {
     setTimeout(() => {
       showVictoryModal({ 
         winner, 
-        stats, // <-- Passa as estatísticas corretas para o modal
+        stats, // Passa as estatísticas corretas para o modal
         // ADICIONA OS CALLBACKS DE NAVEGAÇÃO
         onPlayAgain: () => navigateTo('game'),
         onGoToMenu: () => navigateTo('menu')
@@ -637,7 +626,7 @@ export function renderGameView(container) {
   function checkWinner() {
     const winner = engine.checkWinner();
     if (winner) {
-      triggerEndGame(winner); // <-- Chama a nova função
+      triggerEndGame(winner);
       return true;
     }
     return false;
@@ -653,7 +642,7 @@ export function renderGameView(container) {
     const turn = player === 1 ? username : 'IA'; 
     root.querySelector('#hud-turn').textContent = `Vez de ${turn}`;
     
-    // 🔄 Pulse no indicador do jogador ativo
+    // Pulse no indicador do jogador ativo
     const humanIndicator = root.querySelector('#player-human');
     const aiIndicator = root.querySelector('#player-ai');
     
@@ -665,7 +654,7 @@ export function renderGameView(container) {
       humanIndicator.classList.remove('active-player');
     }
     
-    //  Atualiza contadores de peças (usando a função do motor)
+    //  Atualiza contadores de peças usando a função do motor
     const counts = engine.getPieceCounts();
     root.querySelector('#counter-human').textContent = counts.player1;
     root.querySelector('#counter-ai').textContent = counts.player2;
@@ -688,7 +677,7 @@ export function renderGameView(container) {
       }
     }
     
-    // <<< ADICIONADO: Atualiza o ícone de som >>>
+    // Atualiza o ícone de som 
     if (btnSound) {
       // Adiciona/remove a classe 'is-muted' com base no estado
       const isMuted = !state.config.audio.musicOn && !state.config.audio.sfxOn;
@@ -696,10 +685,7 @@ export function renderGameView(container) {
     }
   }
 
-  // ---- Início do Jogo ----
+  // Início do Jogo 
   container.appendChild(root);
   updateHUD();
-  
-  // (Opcional: Se a IA começar, descomentar a linha abaixo)
-  // if (engine.getCurrentPlayer() === 2) { runAITurn(); }
 }

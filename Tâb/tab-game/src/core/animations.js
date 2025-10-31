@@ -293,7 +293,7 @@ function initDesertNight() {
 
 
 
-// HALLOWEEN - Partículas Místicas + Atmosfera
+// HALLOWEEN 
 class MysticParticle {
   constructor() {
     this.x = Math.random() * canvasBg.width;
@@ -660,7 +660,7 @@ function initHalloween() {
 }
 
 
-// CHRISTMAS 
+// NATAL
 //Flocos de Neve 
 class Snowflake {
   constructor() {
@@ -1019,7 +1019,7 @@ class SantaSleigh {
   }
 }
 
-// Grinch a Caminhar - VERSÃO ULTRA REALISTA
+// Grinch 
 class GrinchWalking {
   constructor() {
     this.reset();
@@ -1431,7 +1431,7 @@ function initChristmas() {
   sleigh2.speed *= 1.2;
   particlesFg.push(sleigh2);
   
-  // Grinch a caminhar (70% de chance de aparecer)
+  // Grinch a caminhar
   if (Math.random() > 0.3) {
     const grinch = new GrinchWalking();
     grinch.x = canvasFg.width + Math.random() * 400;
