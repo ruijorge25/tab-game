@@ -2339,7 +2339,7 @@ body[data-theme="desert-night"] .active-player .player-icon-blue {
 }
 
 body[data-theme="desert-night"]::before {
-  background-image: url('../assets/patterns/desert-night-pattern.svg');
+  background-image: url('../assets/patterns/arabic-pattern.svg');
   filter: brightness(0.75) contrast(1.15);
   animation: parallaxFloat 40s ease-in-out infinite;
 }
@@ -2390,9 +2390,51 @@ body[data-theme="halloween"] .active-player .player-icon-blue {
 }
 
 body[data-theme="halloween"]::before {
-  background-image: url('../assets/patterns/halloween-pattern.svg');
+  background-image: url('../assets/patterns/arabic-pattern.svg');
   filter: saturate(1.3) contrast(1.1);
   animation: parallaxFloat 50s ease-in-out infinite;
+}
+
+@keyframes simpleFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* MODIFICADO: Lua atrás do logo no tema Halloween */
+body[data-theme="halloween"] .logo-bloc::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  /* Isto centra a lua e não é substituído pela animação */
+  transform: translate(-50%, -50%); 
+
+  background-image: url('../assets/patterns/lua.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  /* 1. MAIOR (era 140px) */
+  width: 240px; 
+  height: 240px;
+
+  /* Luz branca (mantida) */
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
+
+  z-index: -1;
+
+  /* 2. MAIS OPACA (era 0.75) */
+  opacity: 0.9; /* Opacidade final */
+
+  /* 3. BUG CORRIGIDO (animação) */
+  /* Usamos a nova animação "simpleFadeIn" que só mexe na opacidade */
+  animation: simpleFadeIn 0.8s ease;
+}
+
+body[data-theme="halloween"] .app-logo {
+  /* Escurece o gradiente (brightness) 
+    e ajusta a cor do brilho (drop-shadow) para o roxo do Halloween.
+  */
+  filter: brightness(0.7) drop-shadow(0 8px 32px rgba(147, 112, 219, 0.4));
 }
 
 /* ========== TEMA: CHRISTMAS (Natal) ========== */

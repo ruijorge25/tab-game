@@ -105,10 +105,6 @@ export function renderGameView(container) {
         <div class="dice-card" id="dice-holder"></div>
       </aside>
     </main>
-
-    <footer class="toolbar" style="display: flex; justify-content: flex-start; padding: 0 var(--space-xl) var(--space-xl);">
-      <button class="btn btn-secondary" id="btn-give-up">Desistir</button>
-    </footer>
   `;
 
   const boardPane = root.querySelector('.board-pane');
@@ -273,20 +269,24 @@ export function renderGameView(container) {
 
   // Ações topo
   root.querySelector('#btn-exit').onclick = () => {
-    // Sair sem guardar estatísticas - apenas pede confirmação
-    showModal({
-      title: 'Sair do Jogo',
-      content: '<p>Quer sair do jogo? O progresso não será guardado.</p>',
-      buttons: [
-        { 
-          text: 'Sim, sair', 
-          className: 'btn btn-secondary',
-          onClick: () => navigateTo('menu')
-        },
-        { text: 'Continuar a jogar', className: 'btn btn-primary' }
-      ]
-    });
-  };
+  // MODIFICADO: Agora chama o modal de "Desistir"
+  showModal({
+    title: 'Sair do Jogo (Desistir)', // Título atualizado
+    content: '<p>Tem a certeza que quer sair? <strong>Isto contará como uma derrota</strong> e a vitória será dada à IA.</p>',
+    buttons: [
+      { 
+        text: 'Sim, sair (Desistir)', // Texto atualizado
+        className: 'btn btn-primary', // (Mantém a classe para cor de "perigo")
+        onClick: () => {
+          const { winner } = engine.giveUp(); // O motor calcula quem vence
+          triggerEndGame(winner); // Guarda estatísticas da derrota
+        }
+      },
+      { text: 'Cancelar', className: 'btn btn-secondary' }
+    ]
+  });
+};
+
   root.querySelector('#btn-rules').onclick = () => showRulesModal();
   root.querySelector('#btn-hints').onclick = () => {
     showHint();
@@ -382,25 +382,6 @@ export function renderGameView(container) {
       document.addEventListener('click', handleClickOutside, true);
     }
   };
-  
-  root.querySelector('#btn-give-up').onclick = () => {
-    // Desistir conta como derrota e guarda estatísticas
-    showModal({
-      title: 'Desistir do Jogo',
-      content: '<p>Tem a certeza que quer desistir? <strong>Isto contará como uma derrota</strong> e a vitória será dada à IA.</p>',
-      buttons: [
-        { 
-          text: 'Sim, desistir', 
-          className: 'btn btn-primary', // (CSS irá tratar disto como "perigo")
-          onClick: () => {
-            const { winner } = engine.giveUp(); // O motor calcula quem vence
-            triggerEndGame(winner); // Guarda estatísticas da derrota
-          }
-        },
-        { text: 'Cancelar', className: 'btn btn-secondary' }
-      ]
-    });
-  };
 
   // ===== ATALHOS DE TECLADO =====
   const handleKeyPress = (e) => {
@@ -419,13 +400,16 @@ export function renderGameView(container) {
       }
     }
 
-    // Esc: Fechar modal (mas NÂO sair do jogo)
+    // Esc: Fechar modal OU abrir modal de "Sair/Desistir"
     if (key === 'escape') {
       const modal = document.querySelector('.modal-overlay');
       if (modal) {
-        closeModal(); // Usa a função importada para fechar o modal
+        // Se um modal (regras, desistir, etc.) estiver aberto, fecha-o
+        closeModal(); 
+      } else {
+        // Se NENHUM modal estiver aberto, ativa o modal de "Sair" (que agora é "Desistir")
+        root.querySelector('#btn-exit').click();
       }
-      // A lógica de sair foi removida daqui
     } // <-- A CHAVETA DO 'escape' FECHA AQUI
 
     // H: Mostrar dicas (AGORA ESTÁ FORA DO BLOCO 'escape')
@@ -611,7 +595,14 @@ export function renderGameView(container) {
   function triggerEndGame(winner) {
     if (!winner) return;
     
-    playSound('victory'); // <-- TOCA O SOM DE VITÓRIA
+    // --- LÓGICA DE SOM DE VITÓRIA/DERROTA (MODIFICADO) ---
+    if (winner === 1) {
+      // Jogador 1 (Humano) venceu
+      playSound('victory');
+    } else {
+      // Jogador 2 (IA) venceu ou o Humano desistiu
+      playSound('defeat'); // <-- USA O NOVO SOM DE DERROTA
+    } // <-- TOCA O SOM DE VITÓRIA
     
     // Salva estatísticas (DO PONTO DE VISTA DO JOGADOR HUMANO)
     const stats = {

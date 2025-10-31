@@ -1,6 +1,7 @@
 import { initRouter, navigateTo } from './core/router.js';
 import { initState, state } from './core/state.js';
 import { initAnimationCanvas, startThemeAnimation } from './core/animations.js';
+import { setThemeMusic } from './core/audio.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   initState();
@@ -18,7 +19,8 @@ window.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('no-animations');
   }
   
-  // Inicia animações do tema
+  // Inicia animações E MÚSICA do tema
+  setThemeMusic(currentTheme); // <-- 2. CHAMA A FUNÇÃO AQUI
   startThemeAnimation(currentTheme);
   
   // Observa mudanças no tema para aplicar efeitos
@@ -26,6 +28,7 @@ window.addEventListener('DOMContentLoaded', () => {
     mutations.forEach((mutation) => {
       if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
         const newTheme = document.body.dataset.theme;
+        setThemeMusic(newTheme);
         startThemeAnimation(newTheme);
       }
     });

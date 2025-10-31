@@ -1,6 +1,7 @@
 // Modal.js - Sistema de modais premium com overlay blur
 
 let activeModal = null;
+let activeEscHandler = null;
 
 /**
  * Cria e exibe um modal premium
@@ -81,13 +82,20 @@ export function showModal({ title, content, buttons = [], onClose, className = '
   };
   
   // Fechar com ESC
-  const escHandler = (e) => {
+
+  // Limpa qualquer ouvinte anterior que possa ter ficado preso
+  if (activeEscHandler) {
+    document.removeEventListener('keydown', activeEscHandler);
+  }
+
+  // Define o NOVO ouvinte e guarda-o na variável global
+  activeEscHandler = (e) => {
     if (e.key === 'Escape') {
-      closeModal();
-      document.removeEventListener('keydown', escHandler);
+      closeModal(); // O closeModal agora tratará de remover o ouvinte
     }
   };
-  document.addEventListener('keydown', escHandler);
+
+  document.addEventListener('keydown', activeEscHandler);
 }
 
 /**
@@ -95,6 +103,11 @@ export function showModal({ title, content, buttons = [], onClose, className = '
  */
 export function closeModal() {
   if (!activeModal) return;
+
+  if (activeEscHandler) {
+    document.removeEventListener('keydown', activeEscHandler);
+    activeEscHandler = null; // Limpa a referência
+  }
   
   const { overlay, onClose } = activeModal;
   

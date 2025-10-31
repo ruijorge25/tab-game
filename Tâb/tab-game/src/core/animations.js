@@ -17,6 +17,17 @@ let particlesFg = []; // Partículas da Frente (APENAS PAI NATAL)
 
 let currentTheme = null;
 
+let pumpkinImage = new Image();
+let pumpkinLoaded = false;
+pumpkinImage.src = 'src/assets/patterns/abobora.png';
+pumpkinImage.onload = () => { 
+  pumpkinLoaded = true;
+  console.log("Imagem da abóbora carregada.");
+};
+pumpkinImage.onerror = () => {
+  console.error("Falha ao carregar a imagem da abóbora em src/assets/patterns/abobora.png");
+};
+
 /**
  * Inicializa o canvas de animações
  */
@@ -195,7 +206,7 @@ function animateForeground() {
 class Star {
   constructor() {
     this.x = Math.random() * canvasBg.width; // Usa canvasBg
-    this.y = Math.random() * canvasBg.height * 0.7; // Usa canvasBg
+    this.y = Math.random() * canvasBg.height; // Usa canvasBg
     this.radius = Math.random() * 1.5 + 0.5;
     this.opacity = Math.random() * 0.5 + 0.3;
     this.twinkleSpeed = Math.random() * 0.02 + 0.01;
@@ -391,7 +402,7 @@ class Bat {
     const wingAngle = Math.sin(this.wingPhase) * 0.5;
     
     // Corpo
-    ctx.fillStyle = '#1a0033';
+    ctx.fillStyle = '#000000ff';
     ctx.beginPath();
     ctx.ellipse(0, 0, 8, 12, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -436,287 +447,58 @@ class Bat {
     ctx.fill();
     ctx.restore();
     
-    ctx.globalAlpha = 1;
     ctx.restore();
   }
 }
 
-// Abóbora realista Jack-o'-lantern (estilo 3D profissional)
+// Abóbora (JS Canvas - VERSÃO FINAL)
 class Pumpkin {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
+  constructor() {
+    this.size = 100;
     this.glowPhase = Math.random() * Math.PI * 2;
     this.glowSpeed = 0.03;
-    this.flickerPhase = 0;
-    this.size = 100; // Bem grande
+
+    // --- ADICIONADO: Limites mínimos ---
+    // Baseado no CSS do .menu-shell (min-height: 720px)
+    // e na largura mínima dos painéis (320+320+gap)
+    this.minWidth = 900; 
+    this.minHeight = 720;
   }
-  
+
   update() {
     this.glowPhase += this.glowSpeed;
-    this.flickerPhase += 0.15;
   }
-  
-  draw(ctx) { // Recebe o contexto (será ctxBg)
+
+  draw(ctx) {
+    // 'ctx.canvas' é o 'canvasFg', que tem o tamanho da JANELA
+
+    // --- REGRA DE DESAPARECER ---
+    // Se a janela for mais pequena que o menu, não desenha
+    if (!pumpkinLoaded || ctx.canvas.width < this.minWidth || ctx.canvas.height < this.minHeight) {
+      return; // Desaparece
+    }
+    // --- FIM DA REGRA ---
+
     const glow = 0.8 + Math.sin(this.glowPhase) * 0.2;
-    const flicker = 0.9 + Math.sin(this.flickerPhase) * 0.1; // Efeito de chama
-    
+
+    // Posição "fixa" no canto da JANELA
+    const x = ctx.canvas.width - 100; 
+    const y = ctx.canvas.height - 80;
+
     ctx.save();
-    ctx.translate(this.x, this.y);
-    
-    // Sombra realista no chão
-    const shadowGradient = ctx.createRadialGradient(0, this.size * 0.6, 0, 0, this.size * 0.6, this.size * 0.5);
-    shadowGradient.addColorStop(0, 'rgba(0, 0, 0, 0.6)');
-    shadowGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-    ctx.fillStyle = shadowGradient;
-    ctx.beginPath();
-    ctx.ellipse(0, this.size * 0.6, this.size * 0.45, this.size * 0.1, 0, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // GOMOS DA ABÓBORA (8 segmentos 3D)
-    const segments = 8;
-    for (let i = 0; i < segments; i++) {
-      const angle = (Math.PI * 2 * i) / segments - Math.PI / 2;
-      const nextAngle = (Math.PI * 2 * (i + 1)) / segments - Math.PI / 2;
-      const midAngle = (angle + nextAngle) / 2;
-      
-      // Gradiente radial para cada gomo (3D)
-      const segmentGradient = ctx.createRadialGradient(
-        Math.cos(midAngle) * this.size * 0.15, 
-        Math.sin(midAngle) * this.size * 0.1, 
-        0,
-        0, 0, this.size * 0.52
-      );
-      
-      // Cores alternadas para profundidade
-      if (i % 2 === 0) {
-        segmentGradient.addColorStop(0, '#ff9d42');
-        segmentGradient.addColorStop(0.4, '#ff7f1e');
-        segmentGradient.addColorStop(0.8, '#e85d04');
-        segmentGradient.addColorStop(1, '#b34400');
-      } else {
-        segmentGradient.addColorStop(0, '#ff8c2a');
-        segmentGradient.addColorStop(0.4, '#ff6b0a');
-        segmentGradient.addColorStop(0.8, '#d84000');
-        segmentGradient.addColorStop(1, '#a03800');
-      }
-      
-      ctx.fillStyle = segmentGradient;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.arc(0, 0, this.size * 0.5, angle, nextAngle);
-      ctx.closePath();
-      ctx.fill();
-    }
-    
-    // Linhas profundas entre gomos
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.lineWidth = 3;
-    for (let i = 0; i < segments; i++) {
-      const angle = (Math.PI * 2 * i) / segments - Math.PI / 2;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(Math.cos(angle) * this.size * 0.5, Math.sin(angle) * this.size * 0.5);
-      ctx.stroke();
-    }
-    
-    // Linhas secundárias (textura)
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.2)';
-    ctx.lineWidth = 1.5;
-    for (let i = 0; i < segments * 2; i++) {
-      const angle = (Math.PI * 2 * i) / (segments * 2) - Math.PI / 2;
-      ctx.beginPath();
-      ctx.moveTo(Math.cos(angle) * this.size * 0.15, Math.sin(angle) * this.size * 0.15);
-      ctx.lineTo(Math.cos(angle) * this.size * 0.48, Math.sin(angle) * this.size * 0.48);
-      ctx.stroke();
-    }
-    
-    // TALO REALISTA 3D
-    const stemGradient = ctx.createLinearGradient(-10, -this.size * 0.6, 10, -this.size * 0.5);
-    stemGradient.addColorStop(0, '#2d5016');
-    stemGradient.addColorStop(0.5, '#3d6b1f');
-    stemGradient.addColorStop(1, '#1a3009');
-    
-    ctx.fillStyle = stemGradient;
-    ctx.strokeStyle = '#0d1a04';
-    ctx.lineWidth = 2;
-    
-    ctx.beginPath();
-    ctx.moveTo(-10, -this.size * 0.48);
-    ctx.quadraticCurveTo(-12, -this.size * 0.58, -8, -this.size * 0.68);
-    ctx.quadraticCurveTo(-4, -this.size * 0.72, 0, -this.size * 0.7);
-    ctx.quadraticCurveTo(4, -this.size * 0.72, 8, -this.size * 0.68);
-    ctx.quadraticCurveTo(12, -this.size * 0.58, 10, -this.size * 0.48);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-    
-    // Texturas no talo
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 4; i++) {
-      const yPos = -this.size * 0.5 - i * 4;
-      ctx.beginPath();
-      ctx.moveTo(-6, yPos);
-      ctx.lineTo(-4, yPos - 2);
-      ctx.stroke();
-      
-      ctx.beginPath();
-      ctx.moveTo(4, yPos);
-      ctx.lineTo(6, yPos - 2);
-      ctx.stroke();
-    }
-    
-    // BRILHO INTERNO FORTE (como vela dentro)
-    const innerGlow = glow * flicker;
-    
-    // Glow laranja forte irradiando
-    const glowRadius = this.size * 0.6;
-    const glowGradient = ctx.createRadialGradient(0, 5, 0, 0, 5, glowRadius);
-    glowGradient.addColorStop(0, `rgba(255, 200, 0, ${innerGlow * 0.8})`);
-    glowGradient.addColorStop(0.3, `rgba(255, 140, 0, ${innerGlow * 0.5})`);
-    glowGradient.addColorStop(0.6, `rgba(255, 100, 0, ${innerGlow * 0.2})`);
-    glowGradient.addColorStop(1, 'rgba(255, 80, 0, 0)');
-    
-    ctx.fillStyle = glowGradient;
-    ctx.beginPath();
-    ctx.arc(0, 5, glowRadius, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // OLHOS TRIANGULARES BRILHANTES
-    ctx.shadowBlur = 30 * innerGlow;
-    ctx.shadowColor = '#ffaa00';
-    
-    // Olho esquerdo (maior e mais assustador)
-    const eyeGradientL = ctx.createRadialGradient(-18, -15, 0, -18, -15, 15);
-    eyeGradientL.addColorStop(0, '#ffff00');
-    eyeGradientL.addColorStop(0.4, '#ffdd00');
-    eyeGradientL.addColorStop(0.7, '#ffaa00');
-    eyeGradientL.addColorStop(1, '#ff8800');
-    
-    ctx.fillStyle = eyeGradientL;
-    ctx.beginPath();
-    ctx.moveTo(-28, -10);
-    ctx.lineTo(-18, -28);
-    ctx.lineTo(-8, -10);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Brilho intenso no centro do olho esquerdo
-    ctx.fillStyle = '#ffffff';
-    ctx.globalAlpha = innerGlow;
-    ctx.beginPath();
-    ctx.arc(-18, -16, 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-    
-    // Olho direito
-    const eyeGradientR = ctx.createRadialGradient(18, -15, 0, 18, -15, 15);
-    eyeGradientR.addColorStop(0, '#ffff00');
-    eyeGradientR.addColorStop(0.4, '#ffdd00');
-    eyeGradientR.addColorStop(0.7, '#ffaa00');
-    eyeGradientR.addColorStop(1, '#ff8800');
-    
-    ctx.fillStyle = eyeGradientR;
-    ctx.beginPath();
-    ctx.moveTo(8, -10);
-    ctx.lineTo(18, -28);
-    ctx.lineTo(28, -10);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Brilho intenso no centro do olho direito
-    ctx.fillStyle = '#ffffff';
-    ctx.globalAlpha = innerGlow;
-    ctx.beginPath();
-    ctx.arc(18, -16, 4, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-    
-    // NARIZ TRIANGULAR BRILHANTE
-    const noseGradient = ctx.createRadialGradient(0, -2, 0, 0, -2, 10);
-    noseGradient.addColorStop(0, '#ffff00');
-    noseGradient.addColorStop(0.5, '#ffcc00');
-    noseGradient.addColorStop(1, '#ff9900');
-    
-    ctx.fillStyle = noseGradient;
-    ctx.beginPath();
-    ctx.moveTo(-8, 5);
-    ctx.lineTo(0, -10);
-    ctx.lineTo(8, 5);
-    ctx.closePath();
-    ctx.fill();
-    
-    // BOCA ASSUSTADORA EM ZIGZAG COM BRILHO
-    const mouthGradient = ctx.createRadialGradient(0, 20, 0, 0, 20, 25);
-    mouthGradient.addColorStop(0, '#ffff00');
-    mouthGradient.addColorStop(0.3, '#ffdd00');
-    mouthGradient.addColorStop(0.6, '#ffaa00');
-    mouthGradient.addColorStop(1, '#ff8800');
-    
-    ctx.fillStyle = mouthGradient;
-    ctx.beginPath();
-    
-    // Boca em zigzag (dentes afiados)
-    ctx.moveTo(-30, 15);
-    ctx.lineTo(-24, 25);
-    ctx.lineTo(-18, 15);
-    ctx.lineTo(-12, 28);
-    ctx.lineTo(-6, 15);
-    ctx.lineTo(0, 30);
-    ctx.lineTo(6, 15);
-    ctx.lineTo(12, 28);
-    ctx.lineTo(18, 15);
-    ctx.lineTo(24, 25);
-    ctx.lineTo(30, 15);
-    ctx.lineTo(25, 18);
-    ctx.lineTo(0, 18);
-    ctx.lineTo(-25, 18);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Brilho extra na boca
-    ctx.fillStyle = '#ffff00';
-    ctx.globalAlpha = innerGlow * 0.4;
-    ctx.beginPath();
-    ctx.arc(0, 22, 8, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = 1;
-    
-    // RAIOS DE LUZ saindo dos olhos e boca (efeito dramático)
-    ctx.strokeStyle = `rgba(255, 200, 0, ${innerGlow * 0.6})`;
-    ctx.lineWidth = 3;
-    ctx.shadowBlur = 15;
-    
-    // Raios do olho esquerdo
-    for (let i = 0; i < 4; i++) {
-      const rayAngle = -Math.PI / 3 - i * 0.15;
-      ctx.beginPath();
-      ctx.moveTo(-18, -18);
-      ctx.lineTo(-18 + Math.cos(rayAngle) * 25, -18 + Math.sin(rayAngle) * 25);
-      ctx.stroke();
-    }
-    
-    // Raios do olho direito
-    for (let i = 0; i < 4; i++) {
-      const rayAngle = -Math.PI * 2 / 3 + i * 0.15;
-      ctx.beginPath();
-      ctx.moveTo(18, -18);
-      ctx.lineTo(18 + Math.cos(rayAngle) * 25, -18 + Math.sin(rayAngle) * 25);
-      ctx.stroke();
-    }
-    
-    // Raios da boca
-    ctx.strokeStyle = `rgba(255, 180, 0, ${innerGlow * 0.4})`;
-    for (let i = -2; i <= 2; i++) {
-      const rayAngle = Math.PI / 2 + i * 0.2;
-      ctx.beginPath();
-      ctx.moveTo(0, 25);
-      ctx.lineTo(Math.cos(rayAngle) * 20, 25 + Math.sin(rayAngle) * 20);
-      ctx.stroke();
-    }
-    
-    ctx.shadowBlur = 0;
+    ctx.translate(x, y); 
+
+    ctx.shadowBlur = 50 * glow; 
+    ctx.shadowColor = '#ffd700';
+
+    ctx.drawImage(
+      pumpkinImage, 
+      -this.size / 2,
+      -this.size / 2,
+      this.size, 
+      this.size
+    );
+
     ctx.restore();
   }
 }
@@ -725,17 +507,24 @@ class Pumpkin {
 class Fog {
   constructor() {
     this.x = Math.random() * canvasBg.width;
-    this.y = canvasBg.height * 0.7 + Math.random() * canvasBg.height * 0.3;
+    this.y = Math.random() * canvasBg.height; // <-- ALTERADO: Y aleatório
     this.vx = (Math.random() - 0.5) * 0.3;
+    this.vy = (Math.random() - 0.5) * 0.2; // <-- ADICIONADO: VY aleatório
     this.size = Math.random() * 150 + 100;
     this.opacity = Math.random() * 0.15 + 0.1;
   }
   
   update() {
     this.x += this.vx;
+    this.y += this.vy; // <-- ADICIONADO
     
+    // Wrap around X (horizontal)
     if (this.x < -this.size) this.x = canvasBg.width + this.size;
     if (this.x > canvasBg.width + this.size) this.x = -this.size;
+
+    // Wrap around Y (vertical)
+    if (this.y < -this.size) this.y = canvasBg.height + this.size;
+    if (this.y > canvasBg.height + this.size) this.y = -this.size;
   }
   
   draw(ctx) { // Recebe o contexto (será ctxBg)
@@ -882,12 +671,11 @@ function initHalloween() {
   for (let i = 0; i < 4; i++) {
     particlesBg.push(new Bat());
   }
-  
-  // Uma abóbora GIGANTE e super realista no canto inferior direito (mais embaixo)
-  particlesBg.push(new Pumpkin(canvasBg.width - 100, canvasBg.height - 80));
+
+  particlesBg.push(new Pumpkin());
   
   // Névoa
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 12; i++) {
     particlesBg.push(new Fog());
   }
   
